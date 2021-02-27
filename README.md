@@ -1,3 +1,3 @@
 # Trim Tabs
 
-See docs/pi_development_setup.md to get started.
+See [pi_development_setup](docs/pi_development_setup.md) to get started.
