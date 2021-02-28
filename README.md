@@ -5,7 +5,8 @@
 <h2 align="center">Trim Tabs</h2>
 
 Testing and protyping with the trim tab hardware.
-<div>
+</div>
+
 
 
 # Getting Started
