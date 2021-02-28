@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://user-images.githubusercontent.com/39144366/109404269-43965100-7919-11eb-8e5c-1e394f088445.png" alt="Trim Tab" height="300">
+<img src="https://user-images.githubusercontent.com/39144366/109404269-43965100-7919-11eb-8e5c-1e394f088445.png" alt="Trim Tab" height="200">
 
 <h2 align="center">Trim Tabs</h2>
 
