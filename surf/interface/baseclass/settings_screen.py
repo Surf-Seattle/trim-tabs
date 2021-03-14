@@ -4,7 +4,7 @@ from kivymd.app import MDApp
 from kivymd.uix.list import OneLineListItem
 from kivymd.uix.screen import MDScreen
 
-from log import logger
+from utils import logger
 
 
 class SurfSettingsScreen(MDScreen):

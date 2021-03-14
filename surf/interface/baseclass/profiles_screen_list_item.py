@@ -12,9 +12,10 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 
-import utilities as u
-from log import logger
-
+from utils import (
+    logger,
+    utilities as u
+)
 from interface.baseclass.profiles_screen_dialogues import EditProfileDialogue
 
 from .tab_navigation import NavigationBar

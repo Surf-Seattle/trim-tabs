@@ -7,8 +7,10 @@ from kivy.properties import (
     DictProperty
 )
 
-import utilities as u
-from log import logger
+from utils import (
+    logger,
+    utilities as u
+)
 
 
 class EditProfileDialogue(BoxLayout):

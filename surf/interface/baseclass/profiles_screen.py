@@ -10,8 +10,10 @@ from kivymd.uix.screen import MDScreen
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 
-import utilities as u
-from log import logger
+from utils import (
+    logger,
+    utilities as u
+)
 
 from interface.baseclass.profiles_screen_list_item import SurfListItem
 from interface.baseclass.profiles_screen_dialogues import EditProfileDialogue, AddProfileDialogue

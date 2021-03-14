@@ -1,6 +1,4 @@
 import RPi.GPIO as GPIO
-import time
-import sys
 
 from utils import pins
 from utils.utilities import (
@@ -16,7 +14,7 @@ def fully_retract() -> None:
     for actuator_name, actuator_config in actuators.items():
         print(f"Retracting {actuator_name} acturator.")
         pins.high(
-            actuator_config["retract"], duration=constant("full_retract_duration")
+            actuator_config["retract"], duration=get_constant("full_retract_duration")
         )
 
 

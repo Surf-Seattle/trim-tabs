@@ -10,10 +10,12 @@ from kivy.properties import (
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.gridlayout import GridLayout
 from kivymd.uix.screen import MDScreen
-
-import utilities as u
-from log import logger
 from .tab_navigation import NavigationBar
+
+from utils import (
+    logger,
+    utilities as u
+)
 
 
 class SurfActiveScreen(MDScreen):
