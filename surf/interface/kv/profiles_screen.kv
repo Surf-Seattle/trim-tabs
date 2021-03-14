@@ -1,0 +1,28 @@
+#: import gch kivy.utils.get_color_from_hex
+
+
+<SurfProfilesScreen>
+    id: profile_screen
+	ScrollView:
+
+	    MDList:
+	    	spacing: dp(20)
+            id: _list
+
+    MDFloatingActionButton:  # NEW PROFILE BUTTON
+        icon: "plus"
+        opposite_colors: True
+        elevation: 8
+        md_bg_color: 1, 0, 0, 1
+        pos_hint: {'right': 0.98, 'top': .2}
+        md_bg_color: gch("#ffd54f")
+        on_release: root.add_profile_dialogue_show(self)
+
+
+<ScrollView>
+    bar_width: 0
+    effect_cls: StiffScrollEffect
+
+
+<SurfLabel@MDLabel>
+    adaptive_height: True

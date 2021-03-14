@@ -1,0 +1,80 @@
+
+<TabValueSlider>
+
+    BoxLayout:
+        id: tab_value_slider
+        orientation: 'horizontal'
+        width: root.width
+        adaptive_height: True
+        padding: [20, 20]
+
+        # Control Surface Value
+
+        MyMDLabel:
+            pos_hint: {"center_x": .5, "center_y": .5}
+            id: control_surface_value
+            size_hint: (.15, 1)
+            font_style: "H4"
+            text: str(int(slider.value))
+            halign: "center"
+            valign: "center"
+
+        MDSlider:
+            pos_hint: {"center_x": .5, "center_y": .5}
+            size_hint: (.65, 1)
+            height: tab_value_slider.height
+            step: 5
+            hint: False
+            id: slider
+            min: root.min
+            max: root.max
+            value: root.value
+
+        # Control Surface Name
+        MyMDLabel:
+            pos_hint: {"center_x": .5, "center_y": .5}
+            id: control_surface_name
+            size_hint: (.20, 1)
+            font_style: "Body1"
+            text: root.display_name
+            halign: "left"
+            # ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'Subtitle1', 'Subtitle2', 'Body1', 'Body2', 'Button', 'Caption', 'Overline', 'Icon']
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+<EditProfileDialogue>
+    app: app
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    height: "300dp"
+    ScrollView:
+        GridLayout:
+            id: interactive_controls
+            cols: 1
+            rows: root.row_count
+            orientation: 'rl-tb'  # right to left, top to bottom
+
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+<AddProfileDialogue>
+    app: app
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    height: "300dp"
+    ScrollView:
+        GridLayout:
+            id: interactive_controls
+            cols: 2
+            rows: root.row_count
+            orientation: 'tb-lr'  # right to left, top to bottom
+
+            MDTextField:
+                id: name
+                hint_text: "Name"
+                helper_text: "Only spaces, upper case, and lower case letters allowed."
+                helper_text_mode: "on_focus"
+

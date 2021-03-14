@@ -1,0 +1,72 @@
+
+<SurfListItem>
+    size_hint_y: None
+    height: dp(80)
+
+    canvas:
+        Color:
+            rgba:
+                self.theme_cls.divider_color
+        Line:
+            points: (root.x+dp(16), root.y, root.x+self.width-dp(16)-0, root.y)
+    canvas.before:
+        Color:
+            rgba: gch("#31313b")
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    on_release: self.event_handler()
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        adaptive_height: True
+        pos_hint: {"center_x": .5, "center_y": .5}
+        spacing: dp(2)
+        padding: dp(15)
+
+        SurfLabel:  # PROFILE NAME
+            text: root.name
+#            theme_text_color: "Primary"
+#            theme_text_color: "Custom"
+#            text_color: root.icon_color,
+            font_style: "H4"
+
+    MDBoxLayout:
+        orientation: 'horizontal'
+        pos_hint: {"center_x": .5, "center_y": .5}
+        adaptive_height: True
+        padding: "10dp"
+#        adaptive_size: True
+        spacing: "10dp"
+
+        SurfLabel:
+            id: PORT
+            text: str(int(root.port_value))
+            theme_text_color: "Secondary"
+            pos_hint: {"center_x": .5, "center_y": .5}
+            halign: "right"
+            font_style: "H4"
+
+        SurfLabel:
+            id: CENTER
+            text: str(int(root.center_value))
+            theme_text_color: "Secondary"
+            pos_hint: {"center_x": .5, "center_y": .5}
+            halign: "center"
+            font_style: "H4"
+
+        SurfLabel:
+            id: STARBOARD
+            text: str(int(root.starboard_value))
+            theme_text_color: "Secondary"
+            pos_hint: {"center_x": .5, "center_y": .5}
+            halign: "left"
+            font_style: "H4"
+
+        MDRoundFlatButton:
+            id: activate_button
+            text: "START"
+            pos_hint: {"left": 1, "center_y": 0.5}
+            on_release: root.activate_handler()
+            md_bg_color: gch("#10ab05")

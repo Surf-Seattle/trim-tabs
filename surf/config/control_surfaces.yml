@@ -1,0 +1,7 @@
+# these will be displayed from left to right
+- name: PORT
+  goofy: STARBOARD
+- name: CENTER
+  goofy: CENTER
+- name: STARBOARD
+  goofy: PORT

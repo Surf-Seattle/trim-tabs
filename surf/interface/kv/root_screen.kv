@@ -1,0 +1,57 @@
+#: import environ os.environ
+#: import gch kivy.utils.get_color_from_hex
+
+#: import StiffScrollEffect kivymd.stiffscroll.StiffScrollEffect
+
+#: import NavigationItem interface.baseclass.tab_navigation.NavigationItem
+#: import NavigationBar interface.baseclass.tab_navigation.NavigationBar
+
+#: import SurfProfilesScreen interface.baseclass.profiles_screen.SurfProfilesScreen
+#: import SurfActiveScreen interface.baseclass.active_screen.SurfActiveScreen
+#: import SurfSettingsScreen interface.baseclass.settings_screen.SurfSettingsScreen
+
+<SurfRootScreen>
+    md_bg_color: gch("#33333d")
+    width: 300
+    height: 500
+
+    MDBoxLayout:
+        orientation: 'vertical'
+
+        NavigationBar:
+            id: nav_bar
+
+            NavigationItem:
+                text: "PROFILES"
+                icon: "shape"
+                on_release:
+                    scr_manager.transition.direction = "right"
+                    scr_manager.current = "PROFILES"
+
+            NavigationItem:
+                text: "ACTIVE"
+                icon: "snowboard"
+                on_release:
+                    scr_manager.transition.direction = "right" \
+                    if scr_manager.current in ["SETTINGS"] \
+                    else "left"
+                    scr_manager.current = "ACTIVE"
+
+            NavigationItem:
+                text: "SETTINGS"
+                icon: "cog"
+                on_release:
+                    scr_manager.transition.direction = "left"
+                    scr_manager.current = "SETTINGS"
+
+        ScreenManager:
+            id: scr_manager
+
+            SurfProfilesScreen:
+                name: "PROFILES"
+
+            SurfActiveScreen:
+                name: "ACTIVE"
+
+            SurfSettingsScreen:
+                name: "SETTINGS"

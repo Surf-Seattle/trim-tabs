@@ -1,0 +1,8 @@
+created: 18-02-2021 16:22:01
+name: Steep
+username: steep
+control_surfaces:
+  PORT: 0
+  CENTER: 5
+  STARBOARD: 30
+goofy: false

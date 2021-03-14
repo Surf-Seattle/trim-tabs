@@ -1,0 +1,35 @@
+2021-03-14 14:52:30,696 Surf                         log.py                             <module>  36     INFO: -----------------------------------------------------------------------------
+2021-03-14 14:52:30,697 Surf                         log.py                             <module>  37     INFO: logger ready.
+2021-03-14 14:52:30,697 Surf                         log.py                             <module>  38     INFO: logging to: /Users/alutz/IdeaProjects/trim-tabs/surf/logs/20210314_145230.log
+2021-03-14 14:52:30,697 Surf                         log.py                             <module>  39     INFO: -----------------------------------------------------------------------------
+2021-03-14 14:52:30,697 Surf                         log.py                             <module>  40     INFO: 
+2021-03-14 14:52:30,697 Surf                        main.py                             <module>  62    DEBUG: env.SURF_ROOT = surf
+2021-03-14 14:52:30,697 Surf                        main.py                             <module>  63    DEBUG: env.PROFILES_DIR = surf/config/profiles
+2021-03-14 14:52:30,698 Surf                        main.py                             <module>  64    DEBUG: env.CONFIG_DIR = surf/config
+2021-03-14 14:52:30,700 Surf                        main.py                             <module>  65    DEBUG: env.CONFIG_DIR = surf/config
+2021-03-14 14:52:30,700 Surf                        main.py                             <module>  66     INFO: 
+2021-03-14 14:52:30,700 Surf                        main.py                             <module>  67     INFO: Running MDSurf.
+2021-03-14 14:52:30,700 Surf                        main.py                             <module>  68     INFO: 
+2021-03-14 14:52:30,700 Surf                        main.py                      load_kv_modules  38     INFO: Loading kivy modules...
+2021-03-14 14:52:30,701 Surf                        main.py                      load_kv_modules  41    DEBUG: 	- loading: surf/interface/kv/profiles_screen_dialogues.kv
+2021-03-14 14:52:30,702 Surf                        main.py                      load_kv_modules  41    DEBUG: 	- loading: surf/interface/kv/profiles_screen.kv
+2021-03-14 14:52:30,703 Surf                        main.py                      load_kv_modules  41    DEBUG: 	- loading: surf/interface/kv/profiles_screen_list_item.kv
+2021-03-14 14:52:30,705 Surf                        main.py                      load_kv_modules  41    DEBUG: 	- loading: surf/interface/kv/tab_navigation.kv
+2021-03-14 14:52:30,706 Surf                        main.py                      load_kv_modules  41    DEBUG: 	- loading: surf/interface/kv/root_screen.kv
+2021-03-14 14:52:30,765 Surf                        main.py                      load_kv_modules  41    DEBUG: 	- loading: surf/interface/kv/active_screen.kv
+2021-03-14 14:52:30,769 Surf                        main.py                      load_kv_modules  41    DEBUG: 	- loading: surf/interface/kv/settings_screen.kv
+2021-03-14 14:52:30,848 Surf             profiles_screen.py                             __init__  30    DEBUG: [UI] Initializing: ProfilesScreen
+2021-03-14 14:52:30,860 Surf               active_screen.py                             __init__  23    DEBUG: [UI] Initializing: ActiveScreen
+2021-03-14 14:52:30,862 Surf               active_screen.py                             __init__  78    DEBUG: [UI] Initializing: ActiveScreen.TabControls
+2021-03-14 14:52:30,881 Surf             settings_screen.py                             __init__  14    DEBUG: [UI] Initializing: SettingsScreen
+2021-03-14 14:52:30,892 Surf             profiles_screen.py             refresh_visible_profiles  35     INFO: [UI] Refreshing Visible Profiles
+2021-03-14 14:52:30,892 Surf                   utilities.py                         read_configs  53     INFO: [UTILITIES] reading all configs
+2021-03-14 14:52:30,894 Surf                   utilities.py                         read_configs  53     INFO: [UTILITIES] reading all configs
+2021-03-14 14:52:30,897 Surf             profiles_screen.py             refresh_visible_profiles  42    DEBUG: [UI] Adding Visible Profile: steep
+2021-03-14 14:52:30,897 Surf                   utilities.py                          read_config  43     INFO: [UTILITIES] reading config: surf/config/profiles/steep.yml
+2021-03-14 14:52:30,899 Surf   profiles_screen_list_item.py                             __init__  34     INFO: [UI] Initializing ProfilesScreen.ListItem: steep
+2021-03-14 14:52:30,907 Surf               active_screen.py                      create_controls  83    DEBUG: [UI] ActiveScreen.TabControls: creating tab controls...
+2021-03-14 14:52:30,908 Surf                   utilities.py                             __init__  13    DEBUG: [UTILITIES] Reading: surf/config/control_surfaces.yml
+2021-03-14 14:52:30,909 Surf               active_screen.py                      create_controls  88     INFO: [UI] Adding "STARBOARD" TabControl to ControlPanel.
+2021-03-14 14:52:30,919 Surf               active_screen.py                      create_controls  88     INFO: [UI] Adding "CENTER" TabControl to ControlPanel.
+2021-03-14 14:52:30,928 Surf               active_screen.py                      create_controls  88     INFO: [UI] Adding "PORT" TabControl to ControlPanel.
