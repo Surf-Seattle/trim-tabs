@@ -12,3 +12,17 @@ Testing and protyping with the trim tab hardware.
 # Getting Started
 
 See [pi_development_setup](docs/pi_development_setup.md) for guidance on setup and configuration.
+
+
+# Roadmap
+
+### v0.0.1 (mvp)
+
+In Scope:
+
+* Edit existing non-active profile via the UI
+
+Out of Scope:
+
+* Adding profiles via the UI
+* GPS support
