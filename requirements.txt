@@ -2,4 +2,3 @@ click==7.1.2
 pyyaml
 RPi.GPIO==0.7.0
 Kivy==2.0.0
-Kivy-Gargen==0.1.4
