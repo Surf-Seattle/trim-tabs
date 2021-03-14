@@ -16,13 +16,9 @@ from utils import (
 )
 
 from interface.baseclass.profiles_screen_list_item import SurfListItem
-from interface.baseclass.profiles_screen_dialogues import EditProfileDialogue, AddProfileDialogue
 
 
 class SurfProfilesScreen(MDScreen):
-    _active_dialogue = None
-    _profile_dialogue = None
-    _add_profile_dialogue = None
     list_created = BooleanProperty(False)
     selected_profile_username = None
     app = ObjectProperty()
@@ -35,8 +31,6 @@ class SurfProfilesScreen(MDScreen):
 
     def refresh_visible_profiles(self, *args, **kwargs):
         logger.info('[UI] Refreshing Visible Profiles')
-        print('u.Profile.read_configs()')
-        print(list(u.Profile.read_configs()))
         configured_usernames = {profile['username'] for profile in u.Profile.read_configs()}
         visible_usernames = {c.id for c in self.ids._list.children}
 
@@ -57,39 +51,6 @@ class SurfProfilesScreen(MDScreen):
             logger.debug(f'[UI] Removing Visible Profile: {remove_username}')
             self.ids._list.remove_widget([c for c in self.ids._list.children if c.id == remove_username][0])
 
-    def get_add_profile_dialogue(self):
-        return MDDialog(
-            title=f"New Surf Profile",
-            type="custom",
-            content_cls=AddProfileDialogue(),
-            buttons=[
-                MDFlatButton(
-                    text="CANCEL",
-                    on_release=self.add_profile_dialogue_close
-                ),
-                MDFlatButton(
-                    text="CREATE",
-                    on_release=self.add_profile_dialogue_save
-                ),
-            ],
-        )
-
-    def add_profile_dialogue_show(self, *args):
-        logger.info('UI: Add Profile Dialogue: SHOW')
-        self._add_profile_dialogue = self.get_add_profile_dialogue()
-        self._add_profile_dialogue.open()
-
-    def add_profile_dialogue_close(self, *args):
-        logger.info('UI: Add Profile Dialogue: CLOSE')
-        self._add_profile_dialogue.dismiss(force=True)
-
-    def add_profile_dialogue_save(self, *args):
-        logger.info('UI: Add Profile Dialogue: SAVE')
-        name = self._add_profile_dialogue.content_cls.ids.name.text
-        control_surfaces = self._add_profile_dialogue.content_cls.slider_values
-        u.Profile(name).create(control_surfaces)
-        self.refresh_visible_profiles()
-        self._add_profile_dialogue.dismiss(force=True)
 
     def set_all_list_item_buttons(self, button_text: str) -> None:
         for profile_list_item in self.ids._list.ids:

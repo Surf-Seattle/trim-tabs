@@ -54,27 +54,3 @@
             cols: 1
             rows: root.row_count
             orientation: 'rl-tb'  # right to left, top to bottom
-
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-
-<AddProfileDialogue>
-    app: app
-    orientation: "vertical"
-    spacing: "12dp"
-    size_hint_y: None
-    height: "300dp"
-    ScrollView:
-        GridLayout:
-            id: interactive_controls
-            cols: 2
-            rows: root.row_count
-            orientation: 'tb-lr'  # right to left, top to bottom
-
-            MDTextField:
-                id: name
-                hint_text: "Name"
-                helper_text: "Only spaces, upper case, and lower case letters allowed."
-                helper_text_mode: "on_focus"
-
