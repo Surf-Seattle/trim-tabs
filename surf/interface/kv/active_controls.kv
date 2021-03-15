@@ -44,16 +44,16 @@
                 pos_hint: {"center_x": .5}
                 padding: [0, 20, 0, 20]
                 md_bg_color: gch("#03fcd7")
-                on_release: root.toggle_goofy()
+                on_release: root.invert()
 
         AnchorLayout:
             size_hint_y: None
-            height: goofy_button.height + 20
+            height: regular_button.height + 20
             MDFillRoundFlatIconButton:
-                id: goofy_button
+                id: regular_button
                 text: "Regular"
                 icon: "toggle-switch"
                 pos_hint: {"center_x": .5}
                 padding: [0, 20, 0, 20]
                 md_bg_color: gch("#03fcd7")
-                on_release: root.toggle_goofy()
+                on_release: root.invert()

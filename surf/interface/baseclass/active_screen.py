@@ -34,11 +34,10 @@ class SurfActiveScreen(MDScreen):
         # username
         self.username = username
         self.list_item = profile_list_item
-        config = u.Profile.read_config(username=username)
 
         # update the Control Panel
-        self.ids.control_panel.enable_controls(config['control_surfaces'])
-        u.get_root_screen(self).active_bar.show(config)
+        self.ids.control_panel.enable_controls(username)
+        u.get_root_screen(self).active_bar.show()
 
     def deactivate(self) -> None:
         """Disable Controls, Set values to 'Off'."""
@@ -52,13 +51,14 @@ class ControlPanel(BoxLayout):
     column_count = NumericProperty()
     tab_control_ids = DictProperty({})
     initial_values = DictProperty({})
+    profile_name = StringProperty()
 
     def __init__(self, *args, **kwargs):
         logger.debug('[UI] Initializing: ActiveScreen.TabControls')
         BoxLayout.__init__(self, *args, **kwargs)
         Clock.schedule_once(self.create_controls)
 
-    def create_controls(self, *args, **kwargs) -> None:
+    def create_controls(self, *args) -> None:
         logger.debug('[UI] ActiveScreen.TabControls: creating tab controls...')
         config = u.Configuration()
         self.column_count = len(config.control_surfaces)
@@ -74,28 +74,31 @@ class ControlPanel(BoxLayout):
             self.ids.interactive_controls.add_widget(tab_control)
 
     def disable_controls(self) -> None:
+        """Disable the ActiveScreen controls."""
+        self.profile_name = ''
         for tab_control_widget in self.tab_control_ids.values():
             tab_control_widget.disable()
 
-    def enable_controls(self, tab_values: dict) -> None:
+    def enable_controls(self, username: str) -> None:
+        """Enable the ActiveScreen controls with values from a WaveProfile yaml file."""
+        config = u.Profile.read_config(username=username)
+
         if not self.initial_values:
-            self.initial_values = tab_values
+            self.initial_values = config['control_surfaces']
 
+        self.profile_name = config['name']
         for tab_control_name, tab_control_widget in self.tab_control_ids.items():
-            tab_control_widget.set_value(tab_values[tab_control_name])
+            tab_control_widget.set_value(config['control_surfaces'][tab_control_name])
 
-    def reset_initial_values(self) -> None:
-        logger.debug(f'[UI] ControlPanel.initial_values reset to: {self.current_values}')
-        self.initial_values = self.current_values
-
-    def goofy_values(self) -> None:
+    def invert(self) -> None:
+        """Mirror the Controls, either `Goofy` or `Regular` was pressed."""
         current_values = self.current_values.copy()
         for current_name, goofy_name in u.Configuration().goofy_map.items():
             self.tab_control_ids[goofy_name].set_value(current_values[current_name])
 
-
     @property
     def current_values(self) -> dict:
+        """The current values of the ActiveScreen controls."""
         return {
             tab_control_name: tab_control_widget.get_value()
             for tab_control_name, tab_control_widget in self.tab_control_ids.items()
@@ -133,6 +136,7 @@ class TabControl(MDBoxLayout):
             logger.debug('')
             logger.debug(f"[UI] Incrementing '{self.id}' value.")
             self.set_value(self.get_value() + 5)
+            u.get_root_screen(self).active_bar.refresh()
 
     def decrement(self, *args) -> None:
         if self.prevent_decrement:
@@ -142,6 +146,7 @@ class TabControl(MDBoxLayout):
             logger.debug('')
             logger.debug(f"[UI] Decrementing '{self.id}' value.")
             self.set_value(self.get_value() - 5)
+            u.get_root_screen(self).active_bar.refresh()
 
     def disable(self) -> None:
         """Disable This """

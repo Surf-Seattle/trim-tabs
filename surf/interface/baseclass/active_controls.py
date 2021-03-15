@@ -13,53 +13,38 @@ from utils import (
 
 
 class ActiveBar(ThemableBehavior, MDBoxLayout):
-    are_we_goofy = BooleanProperty(False)
     profile_name = StringProperty()
 
-    def toggle_goofy(self) -> None:
-        if self.are_we_goofy:
-            self.enable_goofy()
+    def show(self):
+        """Show the ActiveBar widget when a profile is activated."""
+        self.refresh()
+        u.hide_widget(self, dohide=False)
+
+    def hide(self):
+        """Show the ActiveBar widget when the tabs are retracted."""
+        u.hide_widget(self)
+
+    def refresh(self) -> None:
+        """
+        Update the Active Profile Name and Enable or Disable the Goofy and Regular Buttons.
+        Attributes of the ACTIVE screen control_panel are used to refresh the ActiveBar
+        """
+        self.profile_name = u.get_root_screen(self).screen_manager.get_screen("ACTIVE").ids.control_panel.profile_name
+        current_values = u.get_root_screen(self).screen_manager.get_screen("ACTIVE").ids.control_panel.current_values
+        if current_values['PORT'] > current_values['STARBOARD']:
+            self.ids.regular_button.disabled = True
+            self.ids.goofy_button.disabled = False
+        elif current_values['PORT'] < current_values['STARBOARD']:
+            self.ids.regular_button.disabled = False
+            self.ids.goofy_button.disabled = True
         else:
-            self.disable_goofy()
+            self.ids.regular_button.disabled = True
+            self.ids.goofy_button.disabled = True
 
-    def enable_goofy(self) -> None:
-        logger.info('[UI] Enabling Goofy')
-        self.are_we_goofy = True
-        self.ids.goofy_button.icon = 'toggle-switch'
-        self.ids.goofy_button.text = 'Un Goofy'
-        self.parent.ids.control_panel.goofy_values()
-
-    def disable_goofy(self) -> None:
-        logger.info('[UI] Disabling Goofy')
-        self.are_we_goofy = False
-        self.ids.goofy_button.icon = 'toggle-switch-off'
-        self.ids.goofy_button.text = 'Get Goofy'
-        self.parent.ids.control_panel.goofy_values()
-
-    def refresh_save_button(self) -> None:
-        if self.parent.ids.control_panel.initial_values:
-            if self.parent.ids.control_panel.initial_values == self.parent.ids.control_panel.current_values:
-                self.disable_save_changes()
-            else:
-                self.enable_save_changes()
-
-    def enable_save_changes(self) -> None:
-        logger.debug('[UI]\tEnabling "Save Changes"')
-        self.ids.save_changes_button.disabled = False
-
-    def disable_save_changes(self) -> None:
-        logger.debug('[UI]\tDisabling "Save Changes"')
-        self.ids.save_changes_button.disabled = True
-
-    def save_changes(self):
-        logger.debug('[UI] Save Changes Clicked, Saving Changes...')
-        u.Profile(username=self.parent.username).update({
-            'control_surfaces': self.parent.ids.control_panel.current_values,
-            'goofy': self.are_we_goofy,
-        })
-        self.parent.ids.control_panel.reset_initial_values()
-        self.refresh_save_button()
-        self.parent.list_item.update_values(self.parent.ids.control_panel.current_values)
+    def invert(self) -> None:
+        """The Goofy or Regular Button in the ActiveBar was pressed."""
+        u.get_root_screen(self).screen_manager.get_screen("ACTIVE").ids.control_panel.invert()
+        self.refresh()
 
     def retract(self):
         """The Retract Button in the ActiveBar was pressed."""
@@ -70,10 +55,6 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").list_item.deactivate()  # deactivate the list item
         self.hide()  # hide the ActiveBar
 
-    def hide(self):
-        u.hide_widget(self)
 
-    def show(self, config):
-        logger.info(f'config = {config}')
-        self.profile_name = config['name']
-        u.hide_widget(self, dohide=False)
+
+
