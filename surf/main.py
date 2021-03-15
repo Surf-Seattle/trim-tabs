@@ -19,12 +19,9 @@ KV = """
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 #:import SurfRootScreen interface.baseclass.root_screen.SurfRootScreen
 
-ScreenManager:
-    transition: FadeTransition()
+SurfRootScreen:
+    name: "SurfRootScreen"
     
-    SurfRootScreen:
-        name: "SurfRootScreen"
-        
 
 """
 

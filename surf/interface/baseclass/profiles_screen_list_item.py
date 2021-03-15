@@ -44,9 +44,12 @@ class SurfListItem(ThemableBehavior, ButtonBehavior, MDBoxLayout):
         self._dialogue = None
 
     def event_handler(self) -> None:
-        if self.activate_clicked:
+        if self.activate_clicked and self.ids.activate_button.text == 'START':
             self.activate_clicked = False
             self.activate()
+        elif self.activate_clicked and self.ids.activate_button.text == 'STOP':
+            self.activate_clicked = False
+            self.deactivate()
         else:
             self.show_dialogue()
 
@@ -58,27 +61,12 @@ class SurfListItem(ThemableBehavior, ButtonBehavior, MDBoxLayout):
         self.activate_clicked = True
 
     def activate(self) -> None:
+        u.get_root_screen(self).navigation_bar.set_current(1)
+        u.get_root_screen(self).screen_manager.current = "ACTIVE"
+        u.get_screen(self, "ACTIVE").activate(self.username, self)
+        u.get_screen(self, "PROFILES").set_all_list_item_buttons('START')
+        self.ids.activate_button.text = 'STOP'
 
-        print(Clock.max_iteration)
-        # shift the navigation bar over to the "active" tab
-        navbar_in_boxlayout = self.parent.parent.parent.parent.parent
-        nav_bar = [i for i in navbar_in_boxlayout.children if isinstance(i, NavigationBar)][0]
-        nav_bar.set_current(1)
-
-        # have the screenmanager switch to the active sheet
-        screen_manager = self.parent.parent.parent.parent
-        screen_manager.current = "ACTIVE"
-
-        active_profile_screen = [i for i in screen_manager.children if isinstance(i, SurfActiveScreen)][0]
-
-        active_profile_screen.activate(
-            self.username,
-            self,
-        )
-
-        # UPDATE "START"" BUTTON TO "STOP"
-        self.parent.parent.parent.set_all_list_item_buttons('START')
-        self.parent.parent.parent.set_one_list_item_buttons(self.username, 'STOP')
 
     def deactivate(self) -> None:
         self.ids.activate_button.text = 'START'

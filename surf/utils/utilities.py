@@ -157,3 +157,63 @@ def cli_get_new_position(initial_promt: str) -> int:
         return 0
     else:
         return int(int_input)
+
+
+def get_parent(ui_element, **kwargs):
+    if kwargs.get('classname'):
+        if type(ui_element).__name__ == kwargs['classname']:
+            return ui_element
+        else:
+            print(f"looking for {kwargs['classname']}, finding:{ui_element.__class__.__name__}")
+            return get_parent(ui_element.parent, **kwargs)
+
+
+def get_child_of_parent(ui_element, classname):
+    if not hasattr(ui_element, 'children'):
+        print(f"{ui_element.__class__.__name__} does not have `children` attribute")
+        get_child_of_parent(ui_element.parent, classname)
+    else:
+        print(f"{ui_element.__class__.__name__} has `children` attribute")
+        for child in ui_element.children:
+            print(f"checking {ui_element.__class__.__name__} child: {child.__class__.__name__}")
+            if child.__class__.__name__ == classname:
+                return child
+        else:
+            return get_child_of_parent(ui_element.parent, classname)
+
+
+
+
+
+def get_active_profile(ui_element):
+    screen_manager = get_parent(ui_element, classname='ScreenManager')
+    return getattr(screen_manager, 'active_profile', None)
+
+
+def set_active_profile(ui_element, profile_identifier) -> None:
+    screen_manager = get_parent(ui_element, classname='ScreenManager')
+    setattr(screen_manager, 'active_profile', profile_identifier)
+
+
+def get_root_screen(ui_element):
+    if ui_element.__class__.__name__ == 'SurfRootScreen':
+        return ui_element
+    else:
+        return get_root_screen(ui_element.parent)
+
+
+def get_screen(ui_element, screen_name):
+    try:
+        return [s for s in get_root_screen(ui_element).screen_manager.children if s.name == screen_name][0]
+    except IndexError as e:
+        print(f'couldnt find {screen_name} in {get_root_screen(ui_element).screen_manager.children}')
+
+
+def hide_widget(wid, dohide=True):
+    if hasattr(wid, 'saved_attrs'):
+        if not dohide:
+            wid.height, wid.size_hint_y, wid.opacity, wid.disabled = wid.saved_attrs
+            del wid.saved_attrs
+    elif dohide:
+        wid.saved_attrs = wid.height, wid.size_hint_y, wid.opacity, wid.disabled
+        wid.height, wid.size_hint_y, wid.opacity, wid.disabled = 0, None, 0, True

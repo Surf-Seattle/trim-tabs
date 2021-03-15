@@ -27,12 +27,6 @@ class SurfActiveScreen(MDScreen):
         Clock.schedule_once(self.post_init)
 
     def post_init(self, *args, **kwargs):
-
-        # shortcuts
-        # self.ui_notes = self.ids.notes.ids.notes
-        self.ui_retract = self.ids.buttons.ids.retract_button
-        self.ui_goofy = self.ids.buttons.ids.goofy_button
-        self.ui_save_changes = self.ids.buttons.ids.save_changes_button
         self.deactivate()
 
     def activate(self, username: str, profile_list_item) -> None:
@@ -40,32 +34,15 @@ class SurfActiveScreen(MDScreen):
         # username
         self.username = username
         self.list_item = profile_list_item
-
-        # update the button controls
-        self.ui_retract.disabled = False
-        self.ui_goofy.disabled = False
-        self.ids.buttons.refresh_save_button()
-
         config = u.Profile.read_config(username=username)
 
         # update the Control Panel
         self.ids.control_panel.enable_controls(config['control_surfaces'])
-        if config['goofy']:
-            self.ids.buttons.disable_goofy()
-        else:
-            self.ids.buttons.enable_goofy()
+        u.get_root_screen(self).active_bar.show(config)
 
     def deactivate(self) -> None:
         """Disable Controls, Set values to 'Off'."""
         self.username = ''
-        # update the notes input
-        # self.ui_notes.disabled = True
-        # self.ui_notes.hint_text = "No Wave Profile is currently active. Activate a wave profile to begin."
-        # update the button controls
-        self.ui_retract.disabled = True
-        self.ui_goofy.disabled = True
-        self.ui_save_changes.disabled = True
-        self.ui_save_changes.disabled = True
         # update the Control Panel
         self.ids.control_panel.disable_controls()
 
@@ -156,8 +133,6 @@ class TabControl(MDBoxLayout):
             logger.debug('')
             logger.debug(f"[UI] Incrementing '{self.id}' value.")
             self.set_value(self.get_value() + 5)
-            active_screen = self.parent.parent.parent.parent.parent.parent
-            active_screen.ids.buttons.refresh_save_button()
 
     def decrement(self, *args) -> None:
         if self.prevent_decrement:
@@ -167,8 +142,6 @@ class TabControl(MDBoxLayout):
             logger.debug('')
             logger.debug(f"[UI] Decrementing '{self.id}' value.")
             self.set_value(self.get_value() - 5)
-            active_screen = self.parent.parent.parent.parent.parent.parent
-            active_screen.ids.buttons.refresh_save_button()
 
     def disable(self) -> None:
         """Disable This """
@@ -214,69 +187,4 @@ class TabControl(MDBoxLayout):
         self.ids.decrement_control.disabled = False
 
 
-class ActionButtons(MDBoxLayout):
-    are_we_goofy = BooleanProperty(False)
 
-    def toggle_goofy(self) -> None:
-        if self.are_we_goofy:
-            self.enable_goofy()
-        else:
-            self.disable_goofy()
-
-    def enable_goofy(self) -> None:
-        logger.info('[UI] Enabling Goofy')
-        self.are_we_goofy = True
-        self.ids.goofy_button.icon = 'toggle-switch'
-        self.ids.goofy_button.text = 'Un Goofy'
-        self.parent.ids.control_panel.goofy_values()
-
-    def disable_goofy(self) -> None:
-        logger.info('[UI] Disabling Goofy')
-        self.are_we_goofy = False
-        self.ids.goofy_button.icon = 'toggle-switch-off'
-        self.ids.goofy_button.text = 'Get Goofy'
-        self.parent.ids.control_panel.goofy_values()
-
-    def refresh_save_button(self) -> None:
-        if self.parent.ids.control_panel.initial_values:
-            if self.parent.ids.control_panel.initial_values == self.parent.ids.control_panel.current_values:
-                self.disable_save_changes()
-            else:
-                self.enable_save_changes()
-
-    def enable_save_changes(self) -> None:
-        logger.debug('[UI]\tEnabling "Save Changes"')
-        self.ids.save_changes_button.disabled = False
-
-    def disable_save_changes(self) -> None:
-        logger.debug('[UI]\tDisabling "Save Changes"')
-        self.ids.save_changes_button.disabled = True
-
-    def save_changes(self):
-        logger.debug('[UI] Save Changes Clicked, Saving Changes...')
-        u.Profile(username=self.parent.username).update({
-            'control_surfaces': self.parent.ids.control_panel.current_values,
-            'goofy': self.are_we_goofy,
-        })
-        self.parent.ids.control_panel.reset_initial_values()
-        self.refresh_save_button()
-        self.parent.list_item.update_values(self.parent.ids.control_panel.current_values)
-
-    def retract(self):
-        logger.debug('[UI] Retract Clicked, Retracting Tabs...')
-
-        # disable the controls of the ACTIVE tab
-        self.parent.deactivate()
-
-        # shift the navigation bar over to the PROFILES tab
-        navbar_in_boxlayout = self.parent.parent.parent
-        nav_bar = [i for i in navbar_in_boxlayout.children if isinstance(i, NavigationBar)][0]
-        nav_bar.set_current(0)
-
-        # have the screenmanager switch to the ACTIVE sheet
-        screen_manager = self.parent.parent
-        print(f"screen_manager.children = {screen_manager.children}")
-        screen_manager.current = "PROFILES"
-
-        # Reset the text of the button on this surf_list_item which that this ACTIVE screen had been running on
-        self.parent.list_item.deactivate()

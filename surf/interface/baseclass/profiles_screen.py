@@ -7,8 +7,6 @@ from kivy.properties import (
 )
 
 from kivymd.uix.screen import MDScreen
-from kivymd.uix.button import MDFlatButton
-from kivymd.uix.dialog import MDDialog
 
 from utils import (
     logger,
@@ -55,12 +53,3 @@ class SurfProfilesScreen(MDScreen):
     def set_all_list_item_buttons(self, button_text: str) -> None:
         for profile_list_item in self.ids._list.ids:
             profile_list_item.ids.activate_button.text = button_text
-
-    def set_one_list_item_buttons(self, username: str, button_text: str) -> None:
-        for profile_list_item in self.ids._list.children:
-            logger.debug(f'checking profile_list_item with username = "{profile_list_item.username}"')
-            if profile_list_item.username == username:
-                profile_list_item.ids.activate_button.text = button_text
-                break
-        else:
-            logger.warning(f"[UI] profile_list_item with username = '{username}' not found.")

@@ -5,4 +5,3 @@ control_surfaces:
   PORT: 0
   CENTER: 5
   STARBOARD: 10
-goofy: false

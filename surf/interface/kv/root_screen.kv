@@ -5,6 +5,7 @@
 
 #: import NavigationItem interface.baseclass.tab_navigation.NavigationItem
 #: import NavigationBar interface.baseclass.tab_navigation.NavigationBar
+#: import ActionBar interface.baseclass.active_controls.ActiveBar
 
 #: import SurfProfilesScreen interface.baseclass.profiles_screen.SurfProfilesScreen
 #: import SurfActiveScreen interface.baseclass.active_screen.SurfActiveScreen
@@ -55,3 +56,8 @@
 
             SurfSettingsScreen:
                 name: "SETTINGS"
+
+
+        ActiveBar:
+            id: active_bar
+            pos_hint: {"center_x": .5, "center_y": .5}
