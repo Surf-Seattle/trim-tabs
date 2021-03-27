@@ -4,5 +4,6 @@ __pycache__/
 .idea/
 *.iml
 
-# log files
-*.log
+
+surf/build/
+surf/dist/

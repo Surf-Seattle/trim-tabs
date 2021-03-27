@@ -56,14 +56,19 @@ def log_startup_details() -> None:
 
 
 START_TIME = datetime.datetime.now()
+
+# configuration outside of the poject
+HOME_DIR = os.path.join(Path.home(), '.surf')
+CONFIG_DIR = os.path.join(HOME_DIR, 'config')
+LOGS_DIR = os.path.join(HOME_DIR, 'logs')
+PROFILES_DIR = os.path.join(HOME_DIR, 'profiles')
+
+# paths within the project
 ROOT_DIR = Path(os.path.realpath(__file__)).parent.parent
-CONFIG_DIR = os.path.join(ROOT_DIR, 'config')
-LOGS_DIR = os.path.join(ROOT_DIR, 'logs')
-LOG_FILE = get_log_path()
-PROFILES_DIR = os.path.join(CONFIG_DIR, 'profiles')
 UI_DIR = os.path.join(ROOT_DIR, 'interface')
 UI_KV_DIR = os.path.join(UI_DIR, 'kv')
 UI_PY_DIR = os.path.join(UI_DIR, 'baseclass')
 
+LOG_FILE = get_log_path()
 logger = create_logger()
 log_startup_details()
