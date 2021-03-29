@@ -47,6 +47,31 @@ osxappkit - ModuleNotFoundError: No module named 'AppKit'
 
 # https://www.youtube.com/watch?v=NEko7jWYKiE&list=PLCC34OHNcOtpz7PJQ7Tv7hqFBP_xDDjqg&index=20
 
+pip install pyinstaller
+pyinstaller main.py -w
+
+in main.spec, add
+```
+from kivy_deps import sdl2, glew
+...
+a.datas += [
+    ('Code\\active_controls.kv', 'C:\\Users\\aaron\\Documents\\git_project\\trim-trabs\\intraface\\active_controls.kv', 'DATA'),
+    ('Code\\active_screen.kv', 'C:\\Users\\aaron\\Documents\\git_project\\intraface\\active_screen.kv', 'DATA'),
+    ('Code\\profiles_screen.kv', 'C:\\Users\\aaron\\Documents\\git_project\\intraface\\profiles_screen.kv', 'DATA'),
+    ('Code\\profiles_screen_dialogues.kv', 'C:\\Users\\aaron\\Documents\\git_project\\trim-trabs\\intraface\\profiles_screen_dialogues.kv', 'DATA'),
+    ('Code\\profiles_screen_list_item.kv', 'C:\\Users\\aaron\\Documents\\git_project\\trim-trabs\\intraface\\profiles_screen_list_item.kv', 'DATA'),
+    ('Code\\root_screen.kv', 'C:\\Users\\aaron\\Documents\\git_project\\trim-trabs\\intraface\\root_screen.kv', 'DATA'),
+    ('Code\\settings_screen.kv', 'C:\\Users\\aaron\\Documents\\git_project\\trim-trabs\\intraface\\settings_screen.kv', 'DATA'),
+    ('Code\\tab_navigation.kv', 'C:\\Users\\aaron\\Documents\\git_project\\trim-trabs\\intraface\\tab_navigation.kv', 'DATA'),
+]
+...
+ *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins)],
+```
+pyinstaller calc.spec -y
+
+
+I removed this from root_screen.kv: #: import StiffScrollEffect kivymd.stiffscroll.StiffScrollEffect
+
 $ pyintaller main.py -w --onefile
 $ python -m PyInstaller main.py -w --onefile
 < make changes to the .spec file >
