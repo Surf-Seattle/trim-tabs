@@ -62,6 +62,18 @@ Your branch is up to date with 'origin/main'.
 nothing to commit, working tree clean
 ```
 
+# Installing KivyMD
+
+* the `kivymd` which is pip installable is not up to parity with the 
+  `kivymd` which can be installed from github.
+
+```bash
+(surfy) ~/projects/trim-tabs: $ cd ..
+(surfy) ~/projects: $ git clone https://github.com/kivymd/KivyMD.git --depth 1
+(surfy) ~/projects: $ cd KivyMD
+(surfy) ~/projects/KivyMD: $ pip install .
+```
+
 # Installing Dependencies
 
 ```bash
