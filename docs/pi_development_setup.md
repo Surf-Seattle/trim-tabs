@@ -78,7 +78,7 @@ Options:
 ```bash
 ~/projects: $ conda create -n surfy python=3.6
 ~/projects: $ source activate surfy
-(surfy) ~: $
+(surfy) ~/projects: $
 ```
 
 # Cloning Git Repositories
