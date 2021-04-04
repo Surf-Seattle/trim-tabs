@@ -10,7 +10,7 @@ from kivy.core.window import Window
 from utils import (
     logger,
     UI_KV_DIR,
-    create_root_dirs
+    utilities as u
 )
 
 Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
@@ -56,4 +56,5 @@ if __name__ == '__main__':
     logger.info('')
     logger.info('Running MDSurf.')
     logger.info('')
+    u.first_time_setup_check()
     MDSurf().run()

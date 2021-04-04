@@ -9,6 +9,8 @@ from utils import (
     CONFIG_DIR
 )
 
+from utils import first_time_set_up
+
 
 class Configuration:
     control_surfaces_path = os.path.join(CONFIG_DIR, 'control_surfaces.yml')
@@ -117,6 +119,11 @@ class Profile:
             logger.info(f'[UTILITIES] cannot update a profile which does not exist: {self.username}')
 
 
+def first_time_setup_check():
+    first_time_set_up.SetUpControlSurfaces()
+    first_time_set_up.SetUpProfiles()
+
+
 def get_constant(name: str) -> float:
     """Retrieve a value from constants.yml"""
     constants = yaml.safe_load(
@@ -180,9 +187,6 @@ def get_child_of_parent(ui_element, classname):
                 return child
         else:
             return get_child_of_parent(ui_element.parent, classname)
-
-
-
 
 
 def get_active_profile(ui_element):
