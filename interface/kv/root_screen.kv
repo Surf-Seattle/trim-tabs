@@ -1,0 +1,63 @@
+#: import environ os.environ
+
+
+
+#: import NavigationItem interface.baseclass.tab_navigation.NavigationItem
+#: import NavigationBar interface.baseclass.tab_navigation.NavigationBar
+#: import ActionBar interface.baseclass.active_controls.ActiveBar
+
+#: import SurfProfilesScreen interface.baseclass.profiles_screen.SurfProfilesScreen
+#: import SurfActiveScreen interface.baseclass.active_screen.SurfActiveScreen
+#: import SurfSettingsScreen interface.baseclass.settings_screen.SurfSettingsScreen
+
+<SurfRootScreen>
+    md_bg_color: gch("#33333d")
+    width: 300
+    height: 500
+
+    MDBoxLayout:
+        orientation: 'vertical'
+
+        NavigationBar:
+            id: nav_bar
+
+            NavigationItem:
+                text: "PROFILES"
+                icon: "shape"
+                on_release:
+                    scr_manager.transition.direction = "right"
+                    scr_manager.current = "PROFILES"
+
+            NavigationItem:
+                text: "ACTIVE"
+                icon: "snowboard"
+                on_release:
+                    scr_manager.transition.direction = "right" \
+                    if scr_manager.current in ["SETTINGS"] \
+                    else "left"
+                    scr_manager.current = "ACTIVE"
+
+            NavigationItem:
+                text: "SETTINGS"
+                icon: "cog"
+                on_release:
+                    scr_manager.transition.direction = "left"
+                    scr_manager.current = "SETTINGS"
+
+        ScreenManager:
+            id: scr_manager
+            pos_hint_y: .5
+
+            SurfProfilesScreen:
+                name: "PROFILES"
+
+            SurfActiveScreen:
+                name: "ACTIVE"
+
+            SurfSettingsScreen:
+                name: "SETTINGS"
+
+
+        ActiveBar:
+            id: active_bar
+            pos_hint: {"center_x": .5, "center_y": .5}

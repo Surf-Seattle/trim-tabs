@@ -1,0 +1,19 @@
+#: import gch kivy.utils.get_color_from_hex
+#: import StiffScrollEffect kivymd.stiffscroll.StiffScrollEffect
+
+<SurfProfilesScreen>
+    id: profile_screen
+	ScrollView:
+
+	    MDList:
+	    	spacing: dp(20)
+            id: _list
+
+
+<ScrollView>
+    bar_width: 0
+    effect_cls: StiffScrollEffect
+
+
+<SurfLabel@MDLabel>
+    adaptive_height: True
