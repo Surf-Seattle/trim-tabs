@@ -21,6 +21,9 @@ See [pi_development_setup](docs/pi_development_setup.md) for guidance on setup a
 In Scope:
 
 * Edit existing non-active profile via the UI
+* Control pins via active-screen menu
+* Log written to files
+* Adding config and profile files via command line prompts on start-up if necessary
 
 Out of Scope:
 
