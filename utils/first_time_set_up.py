@@ -250,7 +250,7 @@ class SetUpProfiles:
                         os.remove(profile_file_path)
 
             # ensure control surface names are valid
-            valid_surface_names = SetUpControlSurfaces.surface_names
+            valid_surface_names = SetUpControlSurfaces.surface_names()
             if os.path.isfile(profile_file_path):
                 profile_config = yaml.safe_load(open(profile_file_path, 'r'))
                 for configured_surface_name, surface_value in profile_config['control_surfaces'].items():
