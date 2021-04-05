@@ -40,7 +40,7 @@ class SetUpControlSurfaces:
                 if not all([isinstance(x, dict) for x in control_surfaces]):
                     logger.info(f'[SETUP] yaml file did not contain a list of dicts as expected, set-up required.')
                     return True
-                if not all([set(x) == {'name', 'goofy'} for x in control_surfaces]):
+                if not all([set(x) == {'name', 'goofy', 'pins'} for x in control_surfaces]):
                     logger.info(f'[SETUP] yaml file list of dicts did not contain the expected keys, set-up required.')
                     return True
 
@@ -67,9 +67,7 @@ class SetUpControlSurfaces:
                     sort_keys=False
                 )
 
-            print('')
-            print(f'File written: {self.control_surfaces_path}')
-            print('')
+            print(f'\nFile written: {self.control_surfaces_path}\n')
 
     def create_control_surfaces(self):
         print('-'*60)
@@ -408,3 +406,79 @@ class SetUpProfiles:
         if self.setup_required:
             logger.info(f'[SETUP] at least one profile need to be configured.')
             self.create_profiles()
+
+
+class SetUpConstants:
+    config_path = os.path.join(CONFIG_DIR, 'constants.yml')
+
+    @property
+    def setup_required(self) -> bool:
+        if not os.path.exists(self.config_path):
+            logger.info(f'[SETUP] {self.config_path} does not exist.')
+            return True
+
+        try:
+            constants = yaml.safe_load(open(self.config_path, 'r'))
+        except Exception:
+            logger.info(f'[SETUP] {self.config_path} could not be read as a yaml file, it will be deleted.')
+            os.remove(self.config_path)
+            return True
+        else:
+            if constants is None:
+                logger.info(f'[SETUP] {self.config_path} is empty, it will be deleted.')
+                return True
+
+            expected_values = [
+                ('full_extend_duration', float),
+                ('full_retract_duration', float),
+            ]
+            for constant_name, constant_value_type in expected_values:
+                if constant_name not in constants:
+                    logger.info(f'[SETUP] definition of "{constant_name}" was missing, file will be deleted.')
+                    return True
+                elif not isinstance(constants[constant_name], constant_value_type):
+                    logger.info(f'[SETUP] definition of "{constant_name}" was the wrong type, file will be deleted.')
+                    return True
+
+    def get_constants(self):
+        while True:
+            constants = {
+                'full_extend_duration': self.create_float_constant('full_extend_duration'),
+                'full_retract_duration': self.create_float_constant('full_retract_duration'),
+            }
+            print('\n' + ' Review Constants '.center(60, '-') + '\n')
+            print('\nConstants:')
+            for constant_name, constant_value in constants.items():
+                print(f'\t- {constant_name}: {constant_value}')
+            print('')
+            print('Happy with these values?')
+            print('\t- "y" Yes, proceed with these values.')
+            print('\t- "N" No, discard and try again.')
+            while True:
+                print('')
+                accept_constants = input('>>> ')
+                if accept_constants == 'y':
+                    return constants
+                elif accept_constants != 'N':
+                    print('\n!! invalid response, try again.\n')
+
+    def create_float_constant(self, constant_name: str) -> float:
+        while True:
+            constant_value_str = input(f'Enter the value of "{constant_name}" to 2 decimal places: ')
+            try:
+                return float(constant_value_str)
+            except Exception:
+                print('!! enter a decimal')
+
+    def __init__(self) -> None:
+        logger.info(f'[SETUP] checking {self.config_path}')
+        if self.setup_required:
+            logger.info(f'[SETUP] configuration of constants is required.')
+            with open(self.config_path, 'w') as constant_file:
+                yaml.dump(
+                    self.get_constants(),
+                    constant_file,
+                    default_flow_style=False,
+                    sort_keys=False
+                )
+            print(f'\nFile written: {self.config_path}\n')

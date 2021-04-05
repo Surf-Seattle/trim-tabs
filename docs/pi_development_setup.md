@@ -155,12 +155,31 @@ Run the app for the first time:
 | `Create this profile?:`                                         | `y`      |
 | `Would you like to create another profile?:`                    | `N`      |
 
-* At this point the app should load and with the configured profiles.
 * The next time you run `python main.py` these prompts will not appear.
 * To get these prompts to appear again, run the following:
 
 ```bash
 (surfy) ~/projects/trim-tabs: $ rm -rf ~/.surf/profiles/
 ```
+
+### Configuring Constants
+
+* The third set of prompts will populate `~/.surf/config/constants.yml`:
+* For the following prompts, provide the given responses:
+
+| prompt                                                            | response |
+| ----------------------------------------------------------------- | -------- |
+| `Enter the value of "full_extend_duration" to 2 decimal places:`  | `3.52`   |
+| `Enter the value of "full_retract_duration" to 2 decimal places:` | `4.00`   |
+| `Happy with these values?`                                        | `y`      |
+
+* At this point the app should load and with the configured profiles.
+* The next time you run `python main.py` these prompts will not appear.
+* To get these prompts to appear again, run the following:
+
+```bash
+(surfy) ~/projects/trim-tabs: $ rm -rf ~/.surf/config/constants.yml
+```
+
 > running `rm -rf ~/.surf/` is discouraged because it will
 > delete existing log files which may be useful for debugging.
