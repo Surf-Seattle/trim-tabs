@@ -1,3 +1,10 @@
+"""
+Command line prompts which walk a first-time user through setting
+up their `~/.surf/config/control_surfaces.yml` file as well as one
+or more files in `~/.surf/profiles`.
+
+This removes the need for manual file manipulation before the script runs.
+"""
 import os
 import yaml
 
@@ -43,9 +50,13 @@ class SetUpControlSurfaces:
             control_surface_config = [
                 {
                     'name': surface_name,
-                    'goofy': goofy_surface
+                    'goofy': goofy_surface,
+                    'pins': {
+                        'extend': pin_config['extend'],
+                        'retract': pin_config['retract'],
+                    }
                 }
-                for surface_name, goofy_surface
+                for surface_name, goofy_surface, pin_config
                 in self.create_control_surfaces()
             ]
             with open(self.control_surfaces_path, 'w') as control_surface_config_file:
@@ -65,110 +76,76 @@ class SetUpControlSurfaces:
         print('Configure Control Surfaces'.center(60))
         print('-'*60)
         print('')
-        accept_names = None
-        while accept_names != 'y':
-            surface_names = self.get_control_surface_names()
-
-            if not surface_names:
-                print('')
-                print('!! you must configure at least 1 control surface.')
-                print('')
-                continue
-
-            print('')
-            print(' REVIEW SURFACE NAMES '.center(60, '-'))
-            print('')
-            print('You have entered the following control surface names:')
-            for surface_name in surface_names:
-                print(f'\t- {surface_name}')
-            print('')
-            print('Remember, order matters!')
-            print('If you want to re-order the control surfaces, you will need to start over.')
-            print('')
-            print('Are you happy with the names as shown?')
-            print('  "y" -- Yes, I am happy with these names.')
-            print('  "N" -- No, I want to re-enter the control surface names.')
-            print('')
-            accept_names = input('>>> ')
-            if accept_names in ('y', "N"):
-                pass
-            else:
-                print('')
-                print('!! please enter a valid response.')
-                print('')
-
-        accept_goofy = None
-        while accept_goofy not in ('y', 'N'):
-            goofy_names = self.get_goofy_control_surface_mapping(surface_names)
-            print('')
-            print(' REVIEW GOOFY MAPPING '.center(60, '-'))
-            print('')
-            print('You have created the following goofy mapping:')
-            for name, goofy_name in zip(surface_names, goofy_names):
-                print(f'\t {name} <--> {goofy_name}')
-            print('')
-            print('Are you happy with the mapping as shown?')
-            print('  "y" -- Yes, I am happy with this mapping.')
-            print('  "N" -- No, I want to re-enter the mapping values.')
-            print('')
-            accept_goofy = input('>>> ')
-            if accept_goofy in ('y', 'N'):
-                pass
-            else:
-                print('')
-                print('!! please enter a valid response.')
-                print('')
-
-        return zip(surface_names, goofy_names)
-
-    def get_control_surface_names(self):
-
         print('* each control surface represents a single trim tab')
         print('* enter the trim tabs in the order that you would like')
         print('  them to appear in the UI (from left to right).')
+        surface_names = self.get_control_surface_names()
+        return zip(
+            surface_names,
+            self.get_goofy_control_surface_mapping(surface_names),
+            self.get_pin_numbers(surface_names)
+        )
 
-        i = 1
-        control_surface_names = []
+    def get_control_surface_names(self):
+        """Get the name of the control surfaces"""
+
+        def get_count() -> str:
+            """get the number of control surfaces to configure"""
+            while True:
+                control_surface_count = input('\nhow many control surfaces will be configured: ')
+                if control_surface_count.strip().isdigit():
+                    return int(control_surface_count)
+                else:
+                    print('\n!! please enter an integer\n')
+
+        def get_name(i: int, n: int, already_used_names: list) -> str:
+            """Get the name of one of the surfaces to be configured"""
+            while True:
+                surface_name = input(f'enter the name of control surface {i+1} of {n}: ')
+                if not surface_name.isalpha():
+                    print('\t!! This name is not valid.')
+                    print('\t!! Use ONLY letters.')
+                    print('\t!! No spaces or other characters allowed.')
+                elif surface_name in already_used_names:
+                    print('\t!! This name has already been used.')
+                else:
+                    return surface_name
+
         while True:
-
-            print('')
-            print(f'Enter the name for a control surface #{i}')
-            surface_name = input('>>> ')
-
-            # no surface names with the same
-            if not surface_name.isalpha():
-                print('')
-                print('!! This name is not valid.')
-                print('!! Use ONLY letters.')
-                print('!! No spaces or other characters allowed.')
-            elif surface_name.upper() in control_surface_names:
-                print('')
-                print('!! This name has already been entered.')
-                print('!! Please enter a new name for this control surface.')
-            else:
-                control_surface_names.append(surface_name.upper())
-                i += 1
-                print('')
-                print('Would you like to add another control surface? [y/N]')
-                more_surfaces = None
-                while more_surfaces not in ('y', 'N'):
-                    more_surfaces = input('>>> ')
-                    if more_surfaces == 'N':
-                        break
-                    elif more_surfaces == 'y':
-                        pass
-                    else:
-                        more_surfaces = None
-                        print('')
-                        print('!! Please enter either "y" or "N"')
-                        print('!! "y" to add another control surface.')
-                        print('!! "N" to not add additional control surfaces.')
-                        print('')
-                if more_surfaces == 'N':
-                    break
-        return control_surface_names
+            control_surface_count = get_count()
+            control_surface_names = []
+            for i in range(control_surface_count):
+                control_surface_names.append(
+                    get_name(i, control_surface_count, control_surface_names)
+                )
+            print('\n' + ' REVIEW SURFACE NAMES '.center(60, '-') + '\n')
+            print('You have entered the following control surface names:')
+            for surface_name in control_surface_names:
+                print(f'\t- {surface_name}')
+            print('\nRemember, order matters!')
+            print('If you want to re-order the control surfaces, you will need to start over.')
+            print('\nAre you happy with the names as shown?')
+            print('  "y" -- Yes, I am happy with these names.')
+            print('  "N" -- No, I want to re-enter the control surface names.\n')
+            accept_names = input('>>> ')
+            if accept_names == 'y':
+                return control_surface_names
+            elif accept_names != 'N':
+                print('\n!! please enter a valid response.\n')
 
     def get_goofy_control_surface_mapping(self, control_surface_names):
+
+        def get_goofy_counterpart(main_surface: str, choose_from: list) -> str:
+            while True:
+                print('')
+                print(f'Choose from: {choose_from}')
+                goofy_name = input(f'Enter the goofy counterpart of {main_surface}: ')
+                clean_goofy_name = goofy_name.upper().strip()
+                if clean_goofy_name in remaining_options:
+                    return clean_goofy_name
+                else:
+                    print(f'\n!! "{clean_goofy_name}" was not one of the valid options. try again.')
+
         print('')
         print('-'*60)
         print('"Goofy" Control Surface Mapping'.center(60))
@@ -179,23 +156,75 @@ class SetUpControlSurfaces:
         print('  counterpart when flipping between goofy and regular.')
         print('* a control surface can be its own goofy counterpart if')
         print('  its value should not be changed between goofy and regular.')
-        remaining_options = control_surface_names.copy()
-        goofy_surface_names = []
-        for control_surface_name in control_surface_names:
+
+        while True:
+            remaining_options = control_surface_names.copy()
+            goofy_surface_names = []
+            for control_surface_name in control_surface_names:
+                goofy_surface_names.append(get_goofy_counterpart(control_surface_name, remaining_options))
+                remaining_options.remove(goofy_surface_names[-1])
+
+            print('')
+            print(' REVIEW GOOFY MAPPING '.center(60, '-'))
+            print('')
+            print('You have created the following goofy mapping:')
+            for name, goofy_name in zip(control_surface_names, goofy_surface_names):
+                print(f'\t {name} <--> {goofy_name}')
+            print('')
+            print('Are you happy with the mapping as shown?')
+            print('  "y" -- Yes, I am happy with this mapping.')
+            print('  "N" -- No, I want to re-enter the mapping values.')
+            print('')
+            accept_goofy = input('>>> ')
+            if accept_goofy == 'y':
+                return goofy_surface_names
+            elif accept_goofy != 'N':
+                print('\n!! please enter a valid response.\n')
+
+    def get_pin_numbers(self, control_surface_names) -> dict:
+
+        def get_pin(surface_name: str, extend_or_retract: str) -> int:
+            """Get the expand or retract pin for a control surface from the user."""
+            assert extend_or_retract in ('extend', 'retract')
             while True:
-                print('')
-                print(f'Enter the goofy counterpart of: {control_surface_name}')
-                print(f'choose from: {remaining_options}')
-                goofy_name = input('>>> ')
-                clean_goofy_name = goofy_name.upper().strip()
-                if clean_goofy_name in remaining_options:
-                    goofy_surface_names.append(clean_goofy_name)
-                    remaining_options.remove(clean_goofy_name)
-                    break
+                pin_number = input(f'enter {surface_name} {extend_or_retract} pin numer: ')
+                if pin_number.strip().isdigit():
+                    return int(pin_number)
                 else:
                     print('')
-                    print(f'!! "{clean_goofy_name}" was not one of the valid options. try again.')
-        return goofy_surface_names
+                    print('!! only enter integer values.')
+        print('')
+        print('-'*60)
+        print('Control Surface Pin Mapping'.center(60))
+        print('-'*60)
+        print('')
+        print('* each control surface needs to be configured to two pins on the rasberry pi.')
+        print('* one pin will extend the control surface when set high.')
+        print('* the other will retract the control surface when set high.')
+        print('')
+        while True:
+            pin_mapping = [
+                {
+                    'extend': get_pin(pin_name, 'extend'),
+                    'retract': get_pin(pin_name, 'retract'),
+                }
+                for pin_name in control_surface_names
+            ]
+
+            print('\n' + ' REVIEW PIN MAPPING '.center(60, '-') + '\n')
+            print('You have created the following pin mapping:')
+            for surface_name, pins in zip(control_surface_names, pin_mapping):
+                print(f'\t{surface_name}')
+                print(f'\t\textend pin: {pins["extend"]}')
+                print(f'\t\tretract pin: {pins["retract"]}')
+            print('\nAre you happy with the mapping as shown?')
+            print('  "y" -- Yes, I am happy with this mapping.')
+            print('  "N" -- No, I want to re-enter the pin numbers.\n')
+            accept_pins = input('>>> ')
+            if accept_pins == 'y':
+                return pin_mapping
+            elif accept_pins != 'N':
+                print('\n!! please enter a valid response.\n')
 
 
 class SetUpProfiles:
@@ -330,48 +359,52 @@ class SetUpProfiles:
         return profile
 
     def get_profile_values(self):
-
+        """Get the values needed to create a profile from the user."""
         # get the name
-        while True:
+        name = self.get_profile_name()
+        return {
+            'name': name,
+            'username': name.lower().replace(' ', '_'),
+            'control_surfaces': {
+                control_surface_name: self.get_control_surface_value(control_surface_name)
+                for control_surface_name in SetUpControlSurfaces.surface_names()
+            }
+        }
 
+    def get_profile_name(self) -> str:
+        """Get the new Profile Name from the User."""
+        while True:
             print('')
-            print('enter a name for this profile:')
-            name = input('>>> ')
-            if name.replace(' ', '').isalpha():
-                break
-            else:
+            name = input('enter a name for this profile:')
+            if name.upper() in self.names:
+                print('')
+                print('!! this name has already been entered for a profile.')
+                print('!! enter a name you have not used yet.')
+                continue
+            elif not name.replace(' ', '').isalpha():
                 print('')
                 print('!! that is not a valid profile name.')
                 print('!! use only letters and spaces.')
                 print('!! please try again.')
+                continue
+            return name.upper()
 
-        username = name.lower().replace(' ', '_')
+    def get_control_surface_value(self, surface_name) -> int:
+        while True:
+            surface_value = input(f'enter {surface_name} integer value between 0 and 100 (inclusive): ')
+            if '.' in surface_value:
+                print('')
+                print('!! only enter integer values')
+            elif surface_value.strip().isdigit():
+                return int(surface_value.strip())
+            else:
+                raise Exception('An unexpected situation was encountered.')
 
-        # get the control surface values
-        control_surface_values = {
-            control_surface_name: None
-            for control_surface_name in SetUpControlSurfaces.surface_names()
-        }
-        for surface_name in list(control_surface_values):
-            while True:
-                surface_value = input(f'enter {surface_name} integer value between 0 and 100 (inclusive): ')
-                if '.' in surface_value:
-                    print('')
-                    print('!! only enter integer values')
-                elif surface_value.strip().isdigit():
-                    control_surface_values[surface_name] = int(surface_value.strip())
-                    break
-                else:
-                    print(surface_value, type(surface_value))
-        return {
-            'name': name,
-            'username': username,
-            'control_surfaces': control_surface_values
-        }
 
     def __init__(self) -> None:
         logger.info(f'[SETUP] checking {PROFILES_DIR}')
         self.validate_existing_profiles()
+        self.names = []
         if self.setup_required:
             logger.info(f'[SETUP] at least one profile need to be configured.')
             self.create_profiles()
