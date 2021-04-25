@@ -7,6 +7,17 @@ import os
 from utils import CONFIG_DIR
 
 
+class Constants:
+    path = os.path.join(CONFIG_DIR, 'constants.yml')
+
+    def __init__(self):
+        for constant_name, constant_value in yaml.safe_load(open(self.path, 'r')).items():
+            setattr(self, constant_name, constant_value)
+
+
+constants = Constants()
+
+
 class ControlSurfaces:
     path = os.path.join(CONFIG_DIR, 'control_surfaces.yml')
 
@@ -32,6 +43,9 @@ class ControlSurfaces:
             configured_surface['name']: getattr(self, configured_surface['name'])
             for configured_surface in config
         }
+
+    def command(self, commands: dict) -> None:
+        for
 
     def extend(self, *args, **kwargs) -> None:
         if isinstance(args[0], list):
@@ -98,8 +112,15 @@ class Surface:
         self.extend_pin = Pin(extend_pin_number)
         self.retract_pin = Pin(retract_pin_number)
         self.pins = [self.extend_pin, self.retract_pin]
-        self.position = None
+        self.position = 0
 
+    def increment(self) -> None:
+        self.position += 0.05
+        self.extend_pin.high(constants.full_extend_duration * 0.05)
+
+    def decrement(self) -> None:
+        self.position -= 0.05
+        self.retract_pin.high(constants.full_extend_duration * 0.05)
 
 class Pin:
 
