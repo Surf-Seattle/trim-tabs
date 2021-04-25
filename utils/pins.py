@@ -35,9 +35,9 @@ class ControlSurfaces:
 
     def extend(self, *args, **kwargs) -> None:
         if isinstance(args[0], list):
-            self.extend_uniform(*args, **kargs)
+            self.extend_uniform(*args, **kwargs)
         elif isinstance(args[0], dict):
-            self.extend_jagged(*args, **kargs)
+            self.extend_jagged(*args, **kwargs)
 
     def extend_uniform(self, surface_names: List[str], duration: int = None) -> None:
         """Extend one or more control surfaces the same amount."""
