@@ -67,6 +67,7 @@ class ControlSurfaces:
                 manifest = change_manifest[surface_name]
                 print(f'setting {surface_name}.{manifest[1]} high')
                 getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").low()
+                self.surfaces[surface_name].position = new_positions[surface_name]
 
     def extend(self, surface_transform: dict) -> None:
         """Extend one or more control surfaces for by different amounts."""
