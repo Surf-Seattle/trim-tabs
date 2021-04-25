@@ -11,6 +11,11 @@ class ControlSurfaces:
     path = os.path.join(CONFIG_DIR, 'control_surfaces.yml')
 
     def __init__(self):
+        # ensure that the rasberry pi pins are ready to go
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+
+        # create the pin attributes
         config = yaml.safe_load(open(self.path, 'r'))
         for configured_surface in config:
             setattr(
