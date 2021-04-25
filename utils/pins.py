@@ -42,12 +42,12 @@ class ControlSurfaces:
     def extend_uniform(self, surface_names: List[str], duration: int = None) -> None:
         """Extend one or more control surfaces the same amount."""
 
-        for surface in self.surfaces:
-            if surface.name in surface_names:
+        for name, surface in self.surfaces.items():
+            if name in surface_names:
                 surface.extend_pin.high()
         if duration:
-            for surface in self.surfaces:
-                if surface.name in surface_names:
+            for name, surface in self.surfaces.items():
+                if name in surface_names:
                     surface.extend_pin.low()
 
     def extend_jagged(self, surface_transform: dict) -> None:
