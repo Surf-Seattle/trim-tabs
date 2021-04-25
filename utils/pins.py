@@ -118,10 +118,10 @@ class Surface:
             self.extend_pin.high(constants.full_extend_duration * 0.05)
 
     def decrement(self) -> None:
-        if round(self.position + 0.05, 2) >= 0:
-        print(f'{self.name} retracting from {self.position} to {round(self.position - 0.05, 2)}')
-        self.position = round(self.position - 0.05, 2)
-        self.retract_pin.high(constants.full_extend_duration * 0.05)
+        if round(self.position - 0.05, 2) >= 0:
+            print(f'{self.name} retracting from {self.position} to {round(self.position - 0.05, 2)}')
+            self.position = round(self.position - 0.05, 2)
+            self.retract_pin.high(constants.full_extend_duration * 0.05)
 
 
 class Pin:
