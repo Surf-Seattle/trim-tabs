@@ -111,6 +111,19 @@ class Surface:
         self.pins = [self.extend_pin, self.retract_pin]
         self.position = 0
 
+    def move_to(self, position: int) -> None:
+        assert 0 <= position <= 1
+        if position > self.position:
+            print(f"extending {self.name} from {self.position} to {position}")
+            self.position = position
+            self.extend_pin.high(constants.full_extend_duration * (position - self.position))
+        elif position < self.position:
+            print(f"retracting {self.name} from {position} to {self.position}")
+            self.position = position
+            self.retract_pin.high(constants.full_extend_duration * (self.position - position))
+        else:
+            print(f"{self.name} is already at {position}")
+
     def increment(self) -> None:
         if round(self.position + 0.05, 2) <= 1:
             print(f'{self.name} extending from {self.position} to {round(self.position + 0.05, 2)}')
