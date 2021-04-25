@@ -55,11 +55,11 @@ class ControlSurfaces:
             surface_name: (abs(duration), 'extend' if duration > 0 else 'retract')
             for surface_name, duration in duration_change.items()
         }
-        transform_durations = grouped_runtimes({k: v[0] for k, v in change_manifest.items()})
-        for surface_name, manifest in change_manifest:
+        for surface_name, manifest in change_manifest.items():
             print(f'setting {surface_name}.{manifest[1]} high')
             getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").high()
 
+        transform_durations = grouped_runtimes({k: v[0] for k, v in change_manifest.items()})
         for duration, surface_names in transform_durations:
             print(f'sleeping for {duration} seconds...')
             time.sleep(duration)
