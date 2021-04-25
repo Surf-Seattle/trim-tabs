@@ -51,20 +51,27 @@ class ControlSurfaces:
                 if name in surface_names:
                     surface.extend_pin.low()
 
+# A: 10, B: 5, C: 1
+
+# set A, B, C high
+# sleep for 1 second
+# set C low
+# sleep for 4 seconds
+# set B low
+# sleep for 5 seconds
+# set A low
+
     def extend_jagged(self, surface_transform: dict) -> None:
         """Extend one or more control surfaces for by different amounts."""
         transform_durations = grouped_runtimes(surface_transform)
-        print(transform_durations)
-        initial = transform_durations.pop(0)
-        for surface_name in initial[1]:
+        for surface_name in surface_transform:
             print(f'setting {surface_name} high')
             self.surfaces[surface_name].extend_pin.high()
-        print(f'sleeping for {initial[0]} seconds...')
-        time.sleep(initial[0])
+
         for duration, surface_names in transform_durations:
-            print(f'sleeping for {duration} seconds...')
-            time.sleep(duration)
-            for surface_name in set(self.surfaces) - set(surface_names):
+            print(f'sleeping for {initial[0]} seconds...')
+            time.sleep(initial[0])
+            for surface_name in surface_names:
                 print(f'setting {surface_name} low')
                 self.surfaces[surface_name].extend_pin.low()
 
@@ -138,4 +145,15 @@ def grouped_runtimes(surface_runtimes):
             surface: surface_runtime-runtime_difference
             for surface, surface_runtime in surface_runtimes.items()
         }
+    turn_off_after = []
+    for i, run_block in enumerate(run_blocks):
+        try:
+            turn_off_after.append(
+                (
+                    run_block[0],
+                    set(run_block[1]) - set(run_blocks[i+1][1])
+                )
+            )
+        except Exception:
+            turn_off_after.append(run_block)
     return run_blocks
