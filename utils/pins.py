@@ -26,6 +26,10 @@ class ControlSurfaces:
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
 
+        # pick up some constants
+        self.full_extend_duration = constants.full_extend_duration
+        self.full_retract_duration = constants.full_retract_duration
+
         # create the pin attributes
         self.config = yaml.safe_load(open(self.path, 'r'))
         for configured_surface in self.config:
@@ -60,7 +64,16 @@ class ControlSurfaces:
             }
         )
 
-    def move_to(self, new_positions: dict) -> None:
+    def retract(self) -> None:
+        self.move_to(
+            {
+                surface_name: 0
+                for surface_name in self.surfaces
+            },
+            full_travel_duration=self.full_retract_duration
+        )
+
+    def move_to(self, new_positions: dict, full_travel_duration: float = self.full_extend_duration) -> None:
         """Given a dict of surface names and positions, move the surfaces to those positions."""
         assert all([0 <= new_position <= 1 for new_position in new_positions.values()])
 
@@ -77,7 +90,7 @@ class ControlSurfaces:
 
         # transform inputs into easy to follow durations/steps
         duration_change = {
-            surface_name: (new_position - self.surfaces[surface_name].position) * constants.full_extend_duration
+            surface_name: (new_position - self.surfaces[surface_name].position) * full_travel_duration
             for surface_name, new_position in new_positions.items()
         }
         change_manifest = {
@@ -134,11 +147,12 @@ class Surface:
         self.retract_pin = Pin(retract_pin_number)
         self.pins = [self.extend_pin, self.retract_pin]
         self.position = 0
+        self.service_duration = constants.full_extend_duration
 
-    def move_to(self, position: int) -> None:
+    def move_to(self, position: int, full_travel_duration: float = self.service_duration) -> None:
         """Move this surface from its current position to a new position"""
         assert 0 <= position <= 1
-        runtime = constants.full_extend_duration * abs(position - self.position)
+        runtime = full_travel_duration * abs(position - self.position)
         if position > self.position:
             print(f"extending {self.name} from {self.position} to {position} (duration: {round(runtime, 2)})")
             self.position = position
@@ -155,14 +169,14 @@ class Surface:
         if round(self.position + self.increment_by, 2) <= 1:
             print(f'{self.name} extending from {self.position} to {round(self.position + self.increment_by, 2)}')
             self.position = round(self.position + self.increment_by, 2)
-            self.extend_pin.high(constants.full_extend_duration * self.increment_by)
+            self.extend_pin.high(self.service_duration * self.increment_by)
 
     def decrement(self) -> None:
         """Retract this control surface by `increment_by`, supports + and - in the UI Active Screen."""
         if round(self.position - self.increment_by, 2) >= 0:
             print(f'{self.name} retracting from {self.position} to {round(self.position - self.increment_by, 2)}')
             self.position = round(self.position - self.increment_by, 2)
-            self.retract_pin.high(constants.full_extend_duration * self.increment_by)
+            self.retract_pin.high(self.service_duration * self.increment_by)
 
 
 class Pin:
