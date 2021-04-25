@@ -11,7 +11,7 @@ class ControlSurfaces:
     path = os.path.join(CONFIG_DIR, 'control_surfaces.yml')
 
     def __init__(self):
-        config = yaml.safe_read(open(self.path, 'r'))
+        config = yaml.safe_load(open(self.path, 'r'))
         for configured_surface in config:
             setattr(
                 self,
