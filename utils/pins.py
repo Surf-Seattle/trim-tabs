@@ -58,8 +58,10 @@ class ControlSurfaces:
             self.surfaces[surface_name].extend_pin.high()
         print(transform_durations)
         for duration, surface_names in transform_durations:
+            print(f'sleeping for {duration} seconds...')
             time.sleep(duration)
             for surface_name in surface_names:
+                print(f'setting {surface_name} low')
                 self.surfaces[surface_name].extend_pin.low()
 
     def high(self, pin_numbers: List[str], duration: int = None) -> None:
