@@ -46,11 +46,12 @@ class ControlSurfaces:
 
     def move_to(self, new_positions: dict) -> None:
         """Given a dict of surface names and positions, move the surfaces to those positions."""
-        position_change = {
-            surface_name: (new_position - self.surfaces[surface_name].position)
+        assert all([0 <= new_position <= 1 for new_position in new_positions.values()])
+        duration_change = {
+            surface_name: (new_position - self.surfaces[surface_name].position) * constants.full_extend_duration
             for surface_name, new_position in new_positions.items()
         }
-        print(position_change)
+
 
     def extend(self, surface_transform: dict) -> None:
         """Extend one or more control surfaces for by different amounts."""
