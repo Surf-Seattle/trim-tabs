@@ -99,7 +99,7 @@ class ControlSurfaces:
 
     @property
     def positions(self) -> dict:
-        return {surface.name: surface.position for surface in self.surfaces}
+        return {surface.name: surface.position for surface in self.surfaces.values()}
 
 class Surface:
     increment_by = 0.05
