@@ -97,6 +97,9 @@ class ControlSurfaces:
                 if pin.number in pin_numbers:
                     pin.low()
 
+    @property
+    def positions(self) -> dict:
+        return {surface.name: surface.position for surface in self.surfaces}
 
 class Surface:
     increment_by = 0.05
