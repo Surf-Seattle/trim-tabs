@@ -13,9 +13,9 @@ from utils import (
     utilities as u
 )
 
-Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
-Config.set('graphics', 'width', '500')
-Config.set('graphics', 'height', '500')
+#Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
+#Config.set('graphics', 'width', '500')
+#Config.set('graphics', 'height', '500')
 
 
 KV = """
@@ -46,8 +46,11 @@ class MDSurf(MDApp):
     def build(self):
         self.theme_cls.primary_palette = "Green"
         self.theme_cls.theme_style = "Dark"
-        Window.size = (800, 480)
-        Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
+        #Window.size
+        #Window.size = (800, 480)
+        #Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
+        #Config.set('graphics', 'fullscreen', 'auto')
+        #Config.write()
         return Builder.load_string(KV)
 
 
@@ -57,4 +60,7 @@ if __name__ == '__main__':
     logger.info('Running MDSurf.')
     logger.info('')
     u.first_time_setup_check()
+    Config.set('graphics', 'fullscreen', 'auto')
+    Config.set('graphics', 'window_state', 'maximized')
+    Config.write()
     MDSurf().run()
