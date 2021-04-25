@@ -2,7 +2,6 @@ import time
 import RPi.GPIO as GPIO
 from typing import List
 import yaml
-import os
 
 from .utilities import get_actuators
 
