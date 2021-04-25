@@ -115,13 +115,18 @@ def get_differences(srt):
 
 
 def grouped_runtimes(surface_runtimes):
-    run_blocks = {}
+    run_blocks = []
     for runtime_difference in get_differences(surface_runtimes):
-        run_blocks[runtime_difference] = [
-            surface
-            for surface, surface_runtime in surface_runtimes.items()
-            if surface_runtime >= runtime_difference
-        ]
+        run_blocks.append(
+            (
+                runtime_difference,
+                [
+                    surface
+                    for surface, surface_runtime in surface_runtimes.items()
+                    if surface_runtime >= runtime_difference
+                ]
+            )
+        )
         surface_runtimes = {
             surface: surface_runtime-runtime_difference
             for surface, surface_runtime in surface_runtimes.items()
