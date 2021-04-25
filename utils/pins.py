@@ -64,13 +64,14 @@ class ControlSurfaces:
             }
         )
 
-    def retract(self) -> None:
+    def retract(self, force: bool = False) -> None:
         self.move_to(
             {
                 surface_name: 0
                 for surface_name in self.surfaces
             },
-            full_travel_duration=self.full_retract_duration
+            full_travel_duration=self.full_retract_duration,
+            force=force
         )
 
     def move_to(
