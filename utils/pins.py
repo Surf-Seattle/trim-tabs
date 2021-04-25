@@ -44,35 +44,15 @@ class ControlSurfaces:
             for configured_surface in config
         }
 
-    def extend(self, *args, **kwargs) -> None:
-        if isinstance(args[0], list):
-            self.extend_uniform(*args, **kwargs)
-        elif isinstance(args[0], dict):
-            self.extend_jagged(*args, **kwargs)
+    def move_to(self, new_positions: dict) -> None:
+        """Given a dict of surface names and positions, move the surfaces to those positions."""
+        position_change = {
+            surface_name: (new_position - self.surfaces[surface_name].position)
+            for surface_name, new_position in new_positions.items()
+        }
+        print(position_change)
 
-    def extend_uniform(self, surface_names: List[str], duration: int = None) -> None:
-        """Extend one or more control surfaces the same amount."""
-
-        for name, surface in self.surfaces.items():
-            if name in surface_names:
-                surface.extend_pin.high()
-        if duration:
-            time.sleep(duration)
-            for name, surface in self.surfaces.items():
-                if name in surface_names:
-                    surface.extend_pin.low()
-
-# A: 10, B: 5, C: 1
-
-# set A, B, C high
-# sleep for 1 second
-# set C low
-# sleep for 4 seconds
-# set B low
-# sleep for 5 seconds
-# set A low
-
-    def extend_jagged(self, surface_transform: dict) -> None:
+    def extend(self, surface_transform: dict) -> None:
         """Extend one or more control surfaces for by different amounts."""
         transform_durations = grouped_runtimes(surface_transform)
         for surface_name in surface_transform:
@@ -103,6 +83,7 @@ class ControlSurfaces:
 
 
 class Surface:
+    increment_by = 0.05
 
     def __init__(self, name, extend_pin_number: int, retract_pin_number: int) -> None:
         self.name = name
@@ -112,6 +93,7 @@ class Surface:
         self.position = 0
 
     def move_to(self, position: int) -> None:
+        """Move this surface from its current position to a new position"""
         assert 0 <= position <= 1
         runtime = constants.full_extend_duration * abs(position - self.position)
         if position > self.position:
@@ -126,16 +108,18 @@ class Surface:
             print(f"{self.name} is already at {position}")
 
     def increment(self) -> None:
-        if round(self.position + 0.05, 2) <= 1:
-            print(f'{self.name} extending from {self.position} to {round(self.position + 0.05, 2)}')
-            self.position = round(self.position + 0.05, 2)
-            self.extend_pin.high(constants.full_extend_duration * 0.05)
+        """Extend this control surface by `increment_by`, supports + and - in the UI Active Screen."""
+        if round(self.position + self.increment_by, 2) <= 1:
+            print(f'{self.name} extending from {self.position} to {round(self.position + self.increment_by, 2)}')
+            self.position = round(self.position + self.increment_by, 2)
+            self.extend_pin.high(constants.full_extend_duration * self.increment_by)
 
     def decrement(self) -> None:
-        if round(self.position - 0.05, 2) >= 0:
-            print(f'{self.name} retracting from {self.position} to {round(self.position - 0.05, 2)}')
-            self.position = round(self.position - 0.05, 2)
-            self.retract_pin.high(constants.full_extend_duration * 0.05)
+        """Retract this control surface by `increment_by`, supports + and - in the UI Active Screen."""
+        if round(self.position - self.increment_by, 2) >= 0:
+            print(f'{self.name} retracting from {self.position} to {round(self.position - self.increment_by, 2)}')
+            self.position = round(self.position - self.increment_by, 2)
+            self.retract_pin.high(constants.full_extend_duration * self.increment_by)
 
 
 class Pin:
