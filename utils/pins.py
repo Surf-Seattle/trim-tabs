@@ -71,7 +71,8 @@ class ControlSurfaces:
 
         # explain to the user what is about to happen
         for surface_name, manifest in change_manifest.items():
-            print(f"{manifest[1]}ing {surface_name} from {self.surfaces[surface_name].position} to {manifest[0]}")
+            print(f"{manifest[1]}ing {surface_name} from "
+                  f"{self.surfaces[surface_name].position} to {new_positions[surface_name]}")
 
         # set all of the target pins high to start
         for surface_name, manifest in change_manifest.items():
