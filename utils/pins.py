@@ -28,10 +28,10 @@ class ControlSurfaces:
                 )
             )
 
-        self.surfaces = [
-            getattr(self, configured_surface['name'])
+        self.surfaces = {
+            configured_surface['name']: getattr(self, configured_surface['name'])
             for configured_surface in config
-        ]
+        }
 
     def extend(self, *args, **kwargs) -> None:
         if isinstance(args[0], list):
@@ -41,6 +41,7 @@ class ControlSurfaces:
 
     def extend_uniform(self, surface_names: List[str], duration: int = None) -> None:
         """Extend one or more control surfaces the same amount."""
+
         for surface in self.surfaces:
             if surface.name in surface_names:
                 surface.extend_pin.high()
@@ -53,11 +54,11 @@ class ControlSurfaces:
         """Extend one or more control surfaces for by different amounts."""
         transform_durations = grouped_runtimes(surface_transform)
         for surface_name in surface_transform:
-            getattr(self, surface_name).extend_pin.high()
+            self.surfaces[surface_name].extend_pin.high()
         for duration, surface_names in transform_durations:
             time.sleep(duration)
             for surface_name in surface_names:
-                getattr(self, surface_name).extend_pin.low()
+                self.surfaces[surface_name].extend_pin.low()
 
     def high(self, pin_numbers: List[str], duration: int = None) -> None:
         for surface in self.surfaces:
