@@ -156,4 +156,4 @@ def grouped_runtimes(surface_runtimes):
             )
         except Exception:
             turn_off_after.append(run_block)
-    return run_blocks
+    return turn_off_after
