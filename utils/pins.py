@@ -51,6 +51,7 @@ class ControlSurfaces:
             surface_name: (new_position - self.surfaces[surface_name].position) * constants.full_extend_duration
             for surface_name, new_position in new_positions.items()
         }
+        print(duration_change)
 
 
     def extend(self, surface_transform: dict) -> None:
