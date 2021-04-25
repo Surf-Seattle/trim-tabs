@@ -115,11 +115,11 @@ class Surface:
         assert 0 <= position <= 1
         runtime = constants.full_extend_duration * abs(position - self.position)
         if position > self.position:
-            print(f"extending {self.name} from {self.position} to {position} (duration: {runtime})")
+            print(f"extending {self.name} from {self.position} to {position} (duration: {round(runtime, 2)})")
             self.position = position
             self.extend_pin.high(duration=runtime)
         elif position < self.position:
-            print(f"retracting {self.name} from {position} to {self.position} (duration: {runtime})")
+            print(f"retracting {self.name} from {position} to {self.position} (duration: {round(runtime, 2)})")
             self.position = position
             self.retract_pin.high(duration=runtime)
         else:
