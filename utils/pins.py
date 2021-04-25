@@ -56,6 +56,7 @@ class ControlSurfaces:
         transform_durations = grouped_runtimes(surface_transform)
         for surface_name in surface_transform:
             self.surfaces[surface_name].extend_pin.high()
+        print(transform_durations)
         for duration, surface_names in transform_durations:
             time.sleep(duration)
             for surface_name in surface_names:
