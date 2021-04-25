@@ -28,6 +28,26 @@ class ControlSurfaces:
                 )
             )
 
+        self.surfaces = [
+            getattr(self, configured_surface['name'])
+            for configured_surface in config
+        ]
+
+    def high(self, pin_numbers: List[str], duration: int = None) -> None:
+        for surface in self.surfaces:
+            for pin in surface.pins:
+                if pin.number in pin_numbers:
+                    pin.high()
+        time.sleep(duration)
+        if duration:
+            self.low(pin_numbers)
+
+    def low(self, pin_numbers: List[str]) -> None:
+        for surface in self.surfaces:
+            for pin in surface.pins:
+                if pin.number in pin_numbers:
+                    pin.low()
+
 
 class Surface:
 
@@ -35,6 +55,7 @@ class Surface:
         self.name = name
         self.extend_pin = Pin(extend_pin_number)
         self.retract_pin = Pin(retract_pin_number)
+        self.pin = [self.extend_pin, self.retract_pin]
         self.position = None
 
 
@@ -54,10 +75,3 @@ class Pin:
     def low(self) -> None:
         """Set a pin low."""
         GPIO.output(self.number, False)
-
-
-def set_as_output(pins: List[int]) -> None:
-    """Configure the a list of pins as an output."""
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(pins, GPIO.OUT)
