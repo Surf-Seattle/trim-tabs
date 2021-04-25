@@ -54,9 +54,10 @@ class ControlSurfaces:
     def extend_jagged(self, surface_transform: dict) -> None:
         """Extend one or more control surfaces for by different amounts."""
         transform_durations = grouped_runtimes(surface_transform)
-        for surface_name in surface_transform:
+        initial = transform_durations.pop(0)
+        for surface_name in initial[1]:
             self.surfaces[surface_name].extend_pin.high()
-        print(transform_durations)
+        time.sleep(initial[0])
         for duration, surface_names in transform_durations:
             print(f'sleeping for {duration} seconds...')
             time.sleep(duration)
