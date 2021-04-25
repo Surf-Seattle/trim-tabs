@@ -46,6 +46,7 @@ class ControlSurfaces:
             if name in surface_names:
                 surface.extend_pin.high()
         if duration:
+            time.sleep(duration)
             for name, surface in self.surfaces.items():
                 if name in surface_names:
                     surface.extend_pin.low()
