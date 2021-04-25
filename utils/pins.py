@@ -44,9 +44,6 @@ class ControlSurfaces:
             for configured_surface in config
         }
 
-    def command(self, commands: dict) -> None:
-        for
-
     def extend(self, *args, **kwargs) -> None:
         if isinstance(args[0], list):
             self.extend_uniform(*args, **kwargs)
