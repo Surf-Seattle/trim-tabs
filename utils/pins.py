@@ -38,8 +38,8 @@ class ControlSurfaces:
             for pin in surface.pins:
                 if pin.number in pin_numbers:
                     pin.high()
-        time.sleep(duration)
         if duration:
+            time.sleep(duration)
             self.low(pin_numbers)
 
     def low(self, pin_numbers: List[str]) -> None:
