@@ -47,6 +47,19 @@ class ControlSurfaces:
     def move_to(self, new_positions: dict) -> None:
         """Given a dict of surface names and positions, move the surfaces to those positions."""
         assert all([0 <= new_position <= 1 for new_position in new_positions.values()])
+
+        # prevent moving to the current position
+        for surface_name, new_position in new_positions.copy().items():
+            if self.surfaces[surface_name].position == new_position:
+                print(f"{surface_name} already at {new_position}")
+                del new_positions[surface_name]
+
+        # if all the given positions are the same as the current positions, don't do anything.
+        if not new_positions:
+            print("no change required, all positions already satisfied.")
+            return
+
+        # transform inputs into easy to follow durations/steps
         duration_change = {
             surface_name: (new_position - self.surfaces[surface_name].position) * constants.full_extend_duration
             for surface_name, new_position in new_positions.items()
@@ -55,10 +68,17 @@ class ControlSurfaces:
             surface_name: (abs(duration), 'extend' if duration > 0 else 'retract')
             for surface_name, duration in duration_change.items()
         }
+
+        # explain to the user what is about to happen
+        for surface_name, manifest in change_manifest.items():
+            print(f"{manifest[1]}ing {surface_name} from {self.surfaces[surface_name].position} to {manifest[0]}")
+
+        # set all of the target pins high to start
         for surface_name, manifest in change_manifest.items():
             print(f'setting {surface_name}.{manifest[1]} high')
             getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").high()
 
+        # then after each interval gap, turn off the satisfied pins
         transform_durations = grouped_runtimes({k: v[0] for k, v in change_manifest.items()})
         for duration, surface_names in transform_durations:
             print(f'sleeping for {duration} seconds...')
