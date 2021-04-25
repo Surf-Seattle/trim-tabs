@@ -73,13 +73,18 @@ class ControlSurfaces:
             full_travel_duration=self.full_retract_duration
         )
 
-    def move_to(self, new_positions: dict, full_travel_duration: float = constants.full_extend_duration) -> None:
+    def move_to(
+        self,
+        new_positions: dict,
+        full_travel_duration: float = constants.full_extend_duration,
+        force: bool = False
+    ) -> None:
         """Given a dict of surface names and positions, move the surfaces to those positions."""
         assert all([0 <= new_position <= 1 for new_position in new_positions.values()])
 
         # prevent moving to the current position
         for surface_name, new_position in new_positions.copy().items():
-            if self.surfaces[surface_name].position == new_position:
+            if self.surfaces[surface_name].position == new_position and not force:
                 print(f"{surface_name} already at {new_position}")
                 del new_positions[surface_name]
 
