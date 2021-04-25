@@ -68,7 +68,7 @@ class ControlSurfaces:
         if blindly:
             for surface in self.surfaces.values():
                 surface.retract_pin.high()
-            time.sleep(config.full_retract_duration)
+            time.sleep(constants.full_retract_duration)
             for surface in self.surfaces.values():
                 surface.retract_pin.low()
         else:
