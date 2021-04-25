@@ -112,7 +112,7 @@ class Surface:
         self.position = 0
 
     def increment(self) -> None:
-        if round(self.position + 0.05, 2) <= 100:
+        if round(self.position + 0.05, 2) <= 1:
             print(f'{self.name} extending from {self.position} to {round(self.position + 0.05, 2)}')
             self.position = round(self.position + 0.05, 2)
             self.extend_pin.high(constants.full_extend_duration * 0.05)
