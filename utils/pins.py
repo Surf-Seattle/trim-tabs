@@ -55,8 +55,18 @@ class ControlSurfaces:
             surface_name: (abs(duration), 'extend' if duration > 0 else 'retract')
             for surface_name, duration in duration_change.items()
         }
-        print(change_manifest)
+        transform_durations = grouped_runtimes({k: v[1] for k, v in change_manifest})
+        for surface_name, manifest in change_manifest:
+            print(f'setting {surface_name}.{manifest[1]} high')
+            getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").high()
 
+        for duration, surface_names in transform_durations:
+            print(f'sleeping for {duration} seconds...')
+            time.sleep(duration)
+            for surface_name in surface_names:
+                manifest = change_manifest[surface_name]
+                print(f'setting {surface_name}.{manifest[1]} high')
+                getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").low()
 
     def extend(self, surface_transform: dict) -> None:
         """Extend one or more control surfaces for by different amounts."""
