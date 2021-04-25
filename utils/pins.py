@@ -33,6 +33,32 @@ class ControlSurfaces:
             for configured_surface in config
         ]
 
+    def extend(self, *args, **kwargs) -> None:
+        if isinstance(args[0], list):
+            self.extend_uniform(*args, **kargs)
+        elif isinstance(args[0], dict):
+            self.extend_jagged(*args, **kargs)
+
+    def extend_uniform(self, surface_names: List[str], duration: int = None) -> None:
+        """Extend one or more control surfaces the same amount."""
+        for surface in self.surfaces:
+            if surface.name in surface_names:
+                surface.extend_pin.high()
+        if duration:
+            for surface in self.surfaces:
+                if surface.name in surface_names:
+                    surface.extend_pin.low()
+
+    def extend_jagged(self, surface_transform: dict) -> None:
+        """Extend one or more control surfaces for by different amounts."""
+        transform_durations = grouped_runtimes(surface_transform)
+        for surface_name in surface_transform:
+            getattr(self, surface_name).extend_pin.high()
+        for duration, surface_names in transform_durations:
+            time.sleep(duration)
+            for surface_name in surface_names:
+                getattr(self, surface_name).extend_pin.low()
+
     def high(self, pin_numbers: List[str], duration: int = None) -> None:
         for surface in self.surfaces:
             for pin in surface.pins:
@@ -75,3 +101,27 @@ class Pin:
     def low(self) -> None:
         """Set a pin low."""
         GPIO.output(self.number, False)
+
+
+def get_differences(srt):
+    run_times = sorted(list(set(srt.values())))
+    run_times_adjusted = []
+    while run_times:
+        run_times_adjusted.append(run_times.pop(0))
+        run_times = [rt_ - run_times_adjusted[-1] for rt_ in run_times]
+    return run_times_adjusted
+
+
+def grouped_runtimes(surface_runtimes):
+    run_blocks = {}
+    for runtime_difference in get_differences(surface_runtimes):
+        run_blocks[runtime_difference] = [
+            surface
+            for surface, surface_runtime in surface_runtimes.items()
+            if surface_runtime >= runtime_difference
+        ]
+        surface_runtimes = {
+            surface: surface_runtime-runtime_difference
+            for surface, surface_runtime in surface_runtimes.items()
+        }
+    return run_blocks
