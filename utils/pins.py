@@ -73,7 +73,7 @@ class ControlSurfaces:
             full_travel_duration=self.full_retract_duration
         )
 
-    def move_to(self, new_positions: dict, full_travel_duration: float = self.full_extend_duration) -> None:
+    def move_to(self, new_positions: dict, full_travel_duration: float = constants.full_extend_duration) -> None:
         """Given a dict of surface names and positions, move the surfaces to those positions."""
         assert all([0 <= new_position <= 1 for new_position in new_positions.values()])
 
@@ -149,7 +149,7 @@ class Surface:
         self.position = 0
         self.service_duration = constants.full_extend_duration
 
-    def move_to(self, position: int, full_travel_duration: float = self.service_duration) -> None:
+    def move_to(self, position: int, full_travel_duration: float = constants.full_extend_duration) -> None:
         """Move this surface from its current position to a new position"""
         assert 0 <= position <= 1
         runtime = full_travel_duration * abs(position - self.position)
