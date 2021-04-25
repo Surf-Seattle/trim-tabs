@@ -64,15 +64,21 @@ class ControlSurfaces:
             }
         )
 
-    def retract(self, force: bool = False) -> None:
-        self.move_to(
-            {
-                surface_name: 0
-                for surface_name in self.surfaces
-            },
-            full_travel_duration=self.full_retract_duration,
-            force=force
-        )
+    def retract(self, blindly: bool = False) -> None:
+        if blindly:
+            for surface in self.surfaces.values():
+                surface.retract_pin.high()
+            time.sleep(config.full_retract_duration)
+            for surface in self.surfaces.values():
+                surface.retract_pin.low()
+        else:
+            self.move_to(
+                {
+                    surface_name: 0
+                    for surface_name in self.surfaces
+                },
+                full_travel_duration=self.full_retract_duration,
+            )
 
     def move_to(
         self,
