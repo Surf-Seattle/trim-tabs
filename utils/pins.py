@@ -55,7 +55,7 @@ class Surface:
         self.name = name
         self.extend_pin = Pin(extend_pin_number)
         self.retract_pin = Pin(retract_pin_number)
-        self.pin = [self.extend_pin, self.retract_pin]
+        self.pins = [self.extend_pin, self.retract_pin]
         self.position = None
 
 
