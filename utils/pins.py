@@ -27,8 +27,8 @@ class ControlSurfaces:
         GPIO.setmode(GPIO.BCM)
 
         # create the pin attributes
-        config = yaml.safe_load(open(self.path, 'r'))
-        for configured_surface in config:
+        self.config = yaml.safe_load(open(self.path, 'r'))
+        for configured_surface in self.config:
             setattr(
                 self,
                 configured_surface['name'],
@@ -41,8 +41,24 @@ class ControlSurfaces:
 
         self.surfaces = {
             configured_surface['name']: getattr(self, configured_surface['name'])
-            for configured_surface in config
+            for configured_surface in self.config
         }
+
+    @property
+    def goofy_map(self) -> dict:
+        return {
+            control_surface['name']: control_surface['goofy']
+            for control_surface in self.config
+            if control_surface['name'] != control_surface['goofy']
+        }
+
+    def invert(self) -> None:
+        self.move_to(
+            {
+                regular: self.surfaces[goofy].position
+                for regular, goofy in self.goofy_map.items()
+            }
+        )
 
     def move_to(self, new_positions: dict) -> None:
         """Given a dict of surface names and positions, move the surfaces to those positions."""
@@ -86,23 +102,9 @@ class ControlSurfaces:
             time.sleep(duration)
             for surface_name in surface_names:
                 manifest = change_manifest[surface_name]
-                print(f'setting {surface_name}.{manifest[1]} high')
+                print(f'setting {surface_name}.{manifest[1]} low')
                 getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").low()
                 self.surfaces[surface_name].position = new_positions[surface_name]
-
-    def extend(self, surface_transform: dict) -> None:
-        """Extend one or more control surfaces for by different amounts."""
-        transform_durations = grouped_runtimes(surface_transform)
-        for surface_name in surface_transform:
-            print(f'setting {surface_name} high')
-            self.surfaces[surface_name].extend_pin.high()
-
-        for duration, surface_names in transform_durations:
-            print(f'sleeping for {duration} seconds...')
-            time.sleep(duration)
-            for surface_name in surface_names:
-                print(f'setting {surface_name} low')
-                self.surfaces[surface_name].extend_pin.low()
 
     def high(self, pin_numbers: List[str], duration: int = None) -> None:
         for surface in self.surfaces:
