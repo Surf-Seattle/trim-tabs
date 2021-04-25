@@ -60,7 +60,7 @@ class ControlSurfaces:
         for duration, surface_names in transform_durations:
             print(f'sleeping for {duration} seconds...')
             time.sleep(duration)
-            for surface_name in surface_names:
+            for surface_name in set(self.surfaces) - set(surface_names):
                 print(f'setting {surface_name} low')
                 self.surfaces[surface_name].extend_pin.low()
 
