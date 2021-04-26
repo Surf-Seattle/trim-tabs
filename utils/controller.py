@@ -172,7 +172,7 @@ class Surface:
     def __init__(self, name, extend_pin_number: int, retract_pin_number: int) -> None:
         # configure identify variables
         self.name = name
-        self.logger = logging.getLogger(f'Surf.Controller.{self.name}')
+        self.logger = logging.getLogger(f'Surf.{self.name}')
 
         # configure pins
         self.extend_pin = Pin(self, 'extend', extend_pin_number)
@@ -248,7 +248,7 @@ class Pin:
         self.name = name
         self.number = number
         self.surface = surface
-        self.logger = logging.getLogger(f"Surf.Controller.{self.surface.name}.{self.number}")
+        self.logger = logging.getLogger(f"Surf.{self.surface.name}.{self.name}")
         GPIO.setup([self.number], GPIO.OUT)
         self.logger.info(f"{self.surface.name} {self.name}s on pin: {self.number}")
 
