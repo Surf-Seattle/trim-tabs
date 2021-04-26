@@ -147,7 +147,7 @@ class ControlSurfaces:
             self.low(pin_numbers)
 
     def low(self, pin_numbers: List[str]) -> None:
-        for surface in self.surfaces:
+        for surface in self.surfaces.values():
             for pin in surface.pins:
                 if pin.number in pin_numbers:
                     pin.low()
