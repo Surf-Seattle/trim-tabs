@@ -137,7 +137,7 @@ class ControlSurfaces:
                 self.surfaces[surface_name].position = new_positions[surface_name]
 
     def high(self, pin_numbers: List[str], duration: int = None) -> None:
-        for surface in self.surfaces:
+        for surface in self.surfaces.values():
             for pin in surface.pins:
                 if pin.number in pin_numbers:
                     pin.high()
