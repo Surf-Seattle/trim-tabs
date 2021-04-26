@@ -122,17 +122,15 @@ class ControlSurfaces:
 
         # set all of the target pins high to start
         for surface_name, manifest in change_manifest.items():
-            self.logger.info(f'setting {surface_name}.{manifest[1]} high')
             getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").high()
 
         # then after each interval gap, turn off the satisfied pins
         transform_durations = grouped_runtimes({k: v[0] for k, v in change_manifest.items()})
         for duration, surface_names in transform_durations:
-            self.logger.info(f'sleeping for {duration} seconds...')
+            self.logger.info(f'sleeping for {round(duration, 4)} seconds...')
             time.sleep(duration)
             for surface_name in surface_names:
                 manifest = change_manifest[surface_name]
-                self.logger.info(f'setting {surface_name}.{manifest[1]} low')
                 getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").low()
                 self.surfaces[surface_name].position = new_positions[surface_name]
 
