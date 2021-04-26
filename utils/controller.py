@@ -175,8 +175,8 @@ class Surface:
         self.logger = logging.getLogger(f'Surf.Controller.{self.name}')
 
         # configure pins
-        self.extend_pin = Pin(self, extend_pin_number)
-        self.retract_pin = Pin(self, retract_pin_number)
+        self.extend_pin = Pin(self, 'extend', extend_pin_number)
+        self.retract_pin = Pin(self, 'retract', retract_pin_number)
         self.pins = [self.extend_pin, self.retract_pin]
 
         # configure control variables
