@@ -70,10 +70,7 @@ class ControlSurfaces:
     def retract(self, blindly: bool = False) -> None:
         if blindly:
             self.high(
-                [
-                    surface.retract_pin.number
-                    for surface in self.surfaces.values()
-                ],
+                self.retract_pins,
                 duration=self.full_retract_duration,
             )
         else:
@@ -155,6 +152,22 @@ class ControlSurfaces:
     @property
     def positions(self) -> dict:
         return {surface.name: surface.position for surface in self.surfaces.values()}
+
+    @property
+    def retract_pins(self) -> List[int]:
+        return [
+            surface.retract_pin.number
+            for surface in self.surfaces.values()
+        ]
+
+    @property
+    def extend_pins(self) -> List[int]:
+        return [
+            surface.extend_pin.number
+            for surface in self.surfaces.values()
+        ]
+
+
 
 
 class Surface:
