@@ -69,11 +69,13 @@ class ControlSurfaces:
 
     def retract(self, blindly: bool = False) -> None:
         if blindly:
-            for surface in self.surfaces.values():
-                surface.retract_pin.high()
-            time.sleep(constants.full_retract_duration)
-            for surface in self.surfaces.values():
-                surface.retract_pin.low()
+            self.high(
+                [
+                    surface.retract_pin.number
+                    for surface in self.surfaces.values()
+                ],
+                duration=self.full_retract_duration,
+            )
         else:
             self.move_to(
                 {
@@ -140,6 +142,7 @@ class ControlSurfaces:
                 if pin.number in pin_numbers:
                     pin.high()
         if duration:
+            self.logger.info(f'sleeping for {round(duration, 4)} seconds...')
             time.sleep(duration)
             self.low(pin_numbers)
 
@@ -202,18 +205,18 @@ class Surface:
         duration = full_travel_duration * abs(new_position - self.position)
         if new_position > self.position:
             self.logger.info(
-                f"extending {self.name} from {self.position} to {new_position} (duration: {round(duration, 2)})"
+                f"extending {self.name} from {self.position} to {new_position}"
             )
             self.position = new_position
             self.extend_pin.high(duration=duration)
         elif new_position < self.position:
             self.logger.info(
-                f"retracting {self.name} from {new_position} to {self.position} (duration: {round(duration, 2)})"
+                f"retracting {self.name} from {new_position} to {self.position}"
             )
             self.position = new_position
             self.retract_pin.high(duration=duration)
         else:
-            self.logger.info(f"{self.name} is already at {new_position}")
+            self.logger.info(f"{self.name} csalready at {new_position}")
 
     def increment(self) -> None:
         """Extend this control surface by `increment_by`, supports + and - in the UI Active Screen."""
@@ -270,7 +273,7 @@ class Pin:
 
         If a `high` is called with a duration, this method will be called after that duration is over.
         """
-        self.logger.info(f"Pin {self.number} LOW.")
+        self.logger.info(f"Pin {self.number} LOW")
         GPIO.output(self.number, False)
 
 
