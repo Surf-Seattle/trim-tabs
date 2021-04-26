@@ -250,7 +250,7 @@ class Pin:
         self.surface = surface
         self.logger = logging.getLogger(f"Surf.{self.surface.name}.{self.name}")
         GPIO.setup([self.number], GPIO.OUT)
-        self.logger.info(f"{self.surface.name} {self.name}s on pin: {self.number}")
+        self.logger.info(f"Pin {self.number} {self.name}s {self.surface.name}")
 
     def high(self, duration: float = None) -> None:
         """
