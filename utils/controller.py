@@ -1,6 +1,6 @@
 import time
 import RPi.GPIO as GPIO
-from typing import List
+from typing import List, Set
 import yaml
 import os
 import logging
@@ -19,7 +19,7 @@ class Constants:
 constants = Constants()
 
 
-class ControlSurfaces:
+class Controller:
     path = os.path.join(CONFIG_DIR, 'control_surfaces.yml')
 
     def __init__(self):
@@ -51,14 +51,6 @@ class ControlSurfaces:
             for configured_surface in self.config
         }
 
-    @property
-    def goofy_map(self) -> dict:
-        return {
-            control_surface['name']: control_surface['goofy']
-            for control_surface in self.config
-            if control_surface['name'] != control_surface['goofy']
-        }
-
     def invert(self) -> None:
         self.move_to(
             {
@@ -82,18 +74,19 @@ class ControlSurfaces:
                 full_travel_duration=self.full_retract_duration,
             )
 
-    def move_to(
-        self,
-        new_positions: dict,
-        full_travel_duration: float = constants.full_extend_duration,
-        force: bool = False
-    ) -> None:
-        """Given a dict of surface names and positions, move the surfaces to those positions."""
+    def move_to(self, new_positions: dict, full_travel_duration: float = constants.full_extend_duration) -> None:
+        """
+        Given a dict of surface names and positions, move the surfaces to those positions.
+
+        :param new_positions: a dictionary with surface names as keys and new positions as values.
+                              positions must be float values >= 0 and <= 1
+        :param full_travel_duration: how many seconds of travel it would take to go from position 0 to position 1
+        """
         assert all([0 <= new_position <= 1 for new_position in new_positions.values()])
 
         # prevent moving to the current position
         for surface_name, new_position in new_positions.copy().items():
-            if self.surfaces[surface_name].position == new_position and not force:
+            if self.surfaces[surface_name].position == new_position:
                 self.logger.info(f"{surface_name} already at {new_position}")
                 del new_positions[surface_name]
 
@@ -103,58 +96,75 @@ class ControlSurfaces:
             return
 
         # transform inputs into easy to follow durations/steps
-        duration_change = {
-            surface_name: (new_position - self.surfaces[surface_name].position) * full_travel_duration
-            for surface_name, new_position in new_positions.items()
-        }
-        change_manifest = {
-            surface_name: (abs(duration), 'extend' if duration > 0 else 'retract')
-            for surface_name, duration in duration_change.items()
-        }
+        change_manifest = self.create_manifest(new_positions, full_travel_duration)
 
         # explain to the user what is about to happen
         for surface_name, manifest in change_manifest.items():
             self.logger.info(
-                f"{manifest[1]}ing {surface_name} from "
+                f"{manifest['action']}ing {surface_name} from "
                 f"{self.surfaces[surface_name].position} to {new_positions[surface_name]}"
             )
 
         # set all of the target pins high to start
         for surface_name, manifest in change_manifest.items():
-            getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").high()
+            dict(self.surfaces[surface_name])[manifest["action"]].high()
 
         # then after each interval gap, turn off the satisfied pins
-        transform_durations = grouped_runtimes({k: v[0] for k, v in change_manifest.items()})
-        for duration, surface_names in transform_durations:
-            self.logger.info(f'sleeping for {round(duration, 4)} seconds...')
-            time.sleep(duration)
+        deactive_surfaces_after = self.deactive_surfaces_after(
+            {
+                surface_name: manifest["duration"]
+                for surface_name, manifest in change_manifest.items()
+            }
+        )
+        for partial_duration, surface_names in deactive_surfaces_after:
+            self.logger.info(f'sleeping for {round(partial_duration, 4)} seconds...')
+            time.sleep(partial_duration)
             for surface_name in surface_names:
                 manifest = change_manifest[surface_name]
                 getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").low()
                 self.surfaces[surface_name].position = new_positions[surface_name]
 
-    def high(self, pin_numbers: List[str], duration: int = None) -> None:
+    def high(self, pin_numbers: List[str], duration: float = None) -> None:
+        """
+        Given a list of pin-numbers, set each of those pins HIGH.
+
+        :param pin_numbers: a list of pin numbers
+        :param duration: optionally, how many seconds the pins show be kept high. If not given, left high indefinitely.
+        """
         for surface in self.surfaces.values():
-            for pin in surface.pins:
+            for pin in list(surface):
                 if pin.number in pin_numbers:
                     pin.high()
+
         if duration:
             self.logger.info(f'sleeping for {round(duration, 4)} seconds...')
             time.sleep(duration)
             self.low(pin_numbers)
 
     def low(self, pin_numbers: List[str]) -> None:
+        """Given a list of pin-numbers, set each of those pins LOW."""
         for surface in self.surfaces.values():
-            for pin in surface.pins:
+            for pin in list(surface):
                 if pin.number in pin_numbers:
                     pin.low()
 
     @property
     def positions(self) -> dict:
+        """A dict of the name each of the controllers `Surface` instances and its current position."""
         return {surface.name: surface.position for surface in self.surfaces.values()}
 
     @property
+    def goofy_map(self) -> dict:
+        """A dictionary which maps the names of surfaces and the name of their configured goofy surface."""
+        return {
+            control_surface['name']: control_surface['goofy']
+            for control_surface in self.config
+            if control_surface['name'] != control_surface['goofy']
+        }
+
+    @property
     def retract_pins(self) -> List[int]:
+        """A list of the retract-pin numbers for each of the controllers `Surface` instances."""
         return [
             surface.retract_pin.number
             for surface in self.surfaces.values()
@@ -162,11 +172,154 @@ class ControlSurfaces:
 
     @property
     def extend_pins(self) -> List[int]:
+        """A list of the retract-pin numbers for each of the controllers `Surface` instances."""
         return [
             surface.extend_pin.number
             for surface in self.surfaces.values()
         ]
 
+    def create_manifest(self, new_positions: List[float], full_travel_duration: float) -> dict:
+        """
+        Convert the new_positions directory into the change_manifest
+
+        Examples:
+            - context: the current position of "A" is 0.1 and "B" is 0.5
+            - given: {"A": 0.4, "B": 0.9} and full_travel_duration=2
+              return: {"A": (0.6, 'extend'), "B": (0.4, 'retract')}
+
+        :param new_positions: a dictionary of surface names and their new positions
+        :param full_travel_duration: how long in seconds a surface takes to travel from position 0 to 1
+        :return: a dictionary which identifies the duration and pin for each surface
+        """
+        # step one is to convert the new_positions dict into a durations dictionary
+        # each value in this dict is positive if `extend` and negative if `retract`
+        surface_durations = {
+            surface_name: (new_position - self.surfaces[surface_name].position) * full_travel_duration
+            for surface_name, new_position in new_positions.items()
+        }
+        # here the durations are made absolute, and the `extend` or `retract` information stored as strings
+        change_manifest = {
+            surface_name: {
+                "duration": abs(duration),
+                "action": "extend" if duration > 0 else "retract"
+            }
+            for surface_name, duration in surface_durations.items()
+        }
+        return change_manifest
+
+    @staticmethod
+    def duration_differences(durations: Set[float]) -> List[float]:
+        """
+        Given a set of durations, return the list of the differences between them.
+
+        Here are two examples to help make sense of that:
+            - given the durations {1, 5, 10}, this function will return [1, 4, 5]
+            - given the durations {2, 3, 4}, this function will return [2, 1, 1]
+
+        This is used to determine how long `time.sleep()` needs to be called in between
+        setting pins high and then setting them low again so that complex surface movements
+        can be performed at the same time, rather than having to move one, then another, then another.
+
+        :param durations: a set containing the durations
+        :return: an list which divides up those differences (order matters)
+        """
+        # order the durations from smallest to largest
+        remaining_durations = sorted(list(durations))
+        duration_differences = []
+
+        # execute the following until the `remaining_durations` list is empty...
+        while remaining_durations:
+
+            # remove the smallest duration from `duration_differences` and append it to `duration_differences`
+            duration_differences.append(remaining_durations.pop(0))
+
+            # loop through the `remaining_durations` and subtract value which was just removed from
+            # `remaining_durations` (which was the smallest remaining) from durations still in `remaining_durations`
+            remaining_durations = [
+                remaining_duration - duration_differences[-1]
+                for remaining_duration in remaining_durations
+            ]
+        return duration_differences
+
+    @classmethod
+    def deactive_surfaces_after(cls, surface_durations):
+        """
+        Restructure a `surface_duration` dict to simplify the execution of pin movements with different durations.
+
+        Examples:
+            - given {"A": 10, "B": 4, "C": 1}
+              return [(1, ["C"]), (3, ["B"]), (6, ["A"])]
+
+            - given {"A": 10, "B": 4, "C": 4}
+              return [(4, ["B", "C"]), (6, ["A"])]
+
+        This takes how long each pin should run, and breaks that down.
+        In English, the return of first and second examples (respectively) would be:
+
+            - after 1 second: set C low.
+              after 3 more seconds: set B low.
+              after 6 more seconds: set  A low.
+
+            - after 4 seconds: set B and C low,
+              after 6 more seconds: set  A low.
+
+        Restructuring the durations in this way makes executing complex pin transitions much easier.
+
+        :param surface_durations: a dictionary where the keys are surface names and the values are durations.
+        :return: the list of tuples structure described above.
+        """
+        # the first step is to translate the input dictionary into the duration_differences, and for
+        # each difference, create a list of surfaces that should be HIGH for that part of the total duration
+        # example: transform {"A": 10, "B": 4, "C": 1} to [(1, ["A", "B", "C"]), (3, ["A", "B"]), (6, ["A"])]
+        duration_groups = []
+        for duration in cls.duration_differences(surface_durations):
+            # the surfaces which will be active during this duration will
+            # be those whose `remaining_duration` is greater than this duration.
+            duration_groups.append(
+                {
+                    "duration": duration,
+                    "active_surfaces": [
+                        surface
+                        for surface, remaining_duration in surface_durations.items()
+                        if remaining_duration >= duration
+                    ]
+                }
+            )
+
+            # once identifying the surfaces which will be active during this duration subtract that
+            # duration from each of the surfaces, so that on the next pass the remaining-durations
+            # will represent how much time that surface needs to be active
+            surface_durations = {
+                surface: remaining_duration - duration
+                for surface, remaining_duration in surface_durations.items()
+            }
+
+        # the second step is to translate the duration groups into output structure
+        # example: transform [(1, ["A", "B", "C"]), (3, ["A", "B"]), (6, ["A"])]
+        #                 to [(1, ["C"]), (3, ["B"]), (6, ["A"])]
+        deactivate_after = []
+        for i, duration_group in enumerate(duration_groups):
+            try:
+                # to identify which surfaces need to be deactivated after each duration
+                # all that you need to do is see which surfaces are in the current duration
+                # but not in the next duration.
+                deactivate_after.append(
+                    (
+                        duration_group["duration"],
+                        set(duration_group["active_surfaces"]) - set(duration_groups[i+1]["active_surfaces"])
+                    )
+                )
+            except IndexError:
+                # do this until you reach the last duration in the list, when there is no longer
+                # a "next duration", in which case the remaining surfaces should be deactivated.
+                deactivate_after.append(
+                    (
+                        duration_group["duration"],
+                        duration_group["active_surfaces"]
+                    )
+                )
+
+        return deactivate_after
 
 
 
@@ -191,11 +344,16 @@ class Surface:
         # configure pins
         self.extend_pin = Pin(self, 'extend', extend_pin_number)
         self.retract_pin = Pin(self, 'retract', retract_pin_number)
-        self.pins = [self.extend_pin, self.retract_pin]
 
         # configure control variables
         self.position = 0
         self.service_duration = constants.full_extend_duration
+
+    def __dict__(self):
+        return {'extend': self.extend_pin, 'retract': self.retract_pin}
+
+    def __list__(self):
+        return [self.extend_pin, self.retract_pin]
 
     def move_to(
         self,
@@ -290,41 +448,3 @@ class Pin:
         GPIO.output(self.number, False)
 
 
-def get_differences(srt):
-    run_times = sorted(list(set(srt.values())))
-    run_times_adjusted = []
-    while run_times:
-        run_times_adjusted.append(run_times.pop(0))
-        run_times = [rt_ - run_times_adjusted[-1] for rt_ in run_times]
-    return run_times_adjusted
-
-
-def grouped_runtimes(surface_runtimes):
-    run_blocks = []
-    for runtime_difference in get_differences(surface_runtimes):
-        run_blocks.append(
-            (
-                runtime_difference,
-                [
-                    surface
-                    for surface, surface_runtime in surface_runtimes.items()
-                    if surface_runtime >= runtime_difference
-                ]
-            )
-        )
-        surface_runtimes = {
-            surface: surface_runtime-runtime_difference
-            for surface, surface_runtime in surface_runtimes.items()
-        }
-    turn_off_after = []
-    for i, run_block in enumerate(run_blocks):
-        try:
-            turn_off_after.append(
-                (
-                    run_block[0],
-                    set(run_block[1]) - set(run_blocks[i+1][1])
-                )
-            )
-        except Exception:
-            turn_off_after.append(run_block)
-    return turn_off_after
