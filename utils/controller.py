@@ -3,6 +3,7 @@ import RPi.GPIO as GPIO
 from typing import List
 import yaml
 import os
+import logging
 
 from utils import CONFIG_DIR
 
@@ -22,6 +23,8 @@ class ControlSurfaces:
     path = os.path.join(CONFIG_DIR, 'control_surfaces.yml')
 
     def __init__(self):
+        self.logger = logging.getLogger('Surf.Controller')
+
         # ensure that the rasberry pi pins are ready to go
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
@@ -92,12 +95,12 @@ class ControlSurfaces:
         # prevent moving to the current position
         for surface_name, new_position in new_positions.copy().items():
             if self.surfaces[surface_name].position == new_position and not force:
-                print(f"{surface_name} already at {new_position}")
+                self.logger.info(f"{surface_name} already at {new_position}")
                 del new_positions[surface_name]
 
         # if all the given positions are the same as the current positions, don't do anything.
         if not new_positions:
-            print("no change required, all positions already satisfied.")
+            self.logger.info("no change required, all positions already satisfied.")
             return
 
         # transform inputs into easy to follow durations/steps
@@ -112,22 +115,24 @@ class ControlSurfaces:
 
         # explain to the user what is about to happen
         for surface_name, manifest in change_manifest.items():
-            print(f"{manifest[1]}ing {surface_name} from "
-                  f"{self.surfaces[surface_name].position} to {new_positions[surface_name]}")
+            self.logger.info(
+                f"{manifest[1]}ing {surface_name} from "
+                f"{self.surfaces[surface_name].position} to {new_positions[surface_name]}"
+            )
 
         # set all of the target pins high to start
         for surface_name, manifest in change_manifest.items():
-            print(f'setting {surface_name}.{manifest[1]} high')
+            self.logger.info(f'setting {surface_name}.{manifest[1]} high')
             getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").high()
 
         # then after each interval gap, turn off the satisfied pins
         transform_durations = grouped_runtimes({k: v[0] for k, v in change_manifest.items()})
         for duration, surface_names in transform_durations:
-            print(f'sleeping for {duration} seconds...')
+            self.logger.info(f'sleeping for {duration} seconds...')
             time.sleep(duration)
             for surface_name in surface_names:
                 manifest = change_manifest[surface_name]
-                print(f'setting {surface_name}.{manifest[1]} low')
+                self.logger.info(f'setting {surface_name}.{manifest[1]} low')
                 getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").low()
                 self.surfaces[surface_name].position = new_positions[surface_name]
 
@@ -150,62 +155,120 @@ class ControlSurfaces:
     def positions(self) -> dict:
         return {surface.name: surface.position for surface in self.surfaces.values()}
 
+
 class Surface:
+    """
+    Control class for a single Surface.
+
+    - Each `ControlSurfaces` instance will have a `Surface` instance for each
+      list item defined in ~/.surf/config/control_surfaces.yml
+      By default this would be 3 instances, one for PORT, CENTER, and STARBOARD
+    - Each `Surface` instance will have two `Pin` instances.
+      One which extends the surface when set high, another which retracts the surface when set high.
+    """
+
     increment_by = 0.05
 
     def __init__(self, name, extend_pin_number: int, retract_pin_number: int) -> None:
+        # configure identify variables
         self.name = name
-        self.extend_pin = Pin(extend_pin_number)
-        self.retract_pin = Pin(retract_pin_number)
+        self.logger = logging.getLogger(f'Surf.Controller.{self.name}')
+
+        # configure pins
+        self.extend_pin = Pin(self, extend_pin_number)
+        self.retract_pin = Pin(self, retract_pin_number)
         self.pins = [self.extend_pin, self.retract_pin]
+
+        # configure control variables
         self.position = 0
         self.service_duration = constants.full_extend_duration
 
-    def move_to(self, position: int, full_travel_duration: float = constants.full_extend_duration) -> None:
-        """Move this surface from its current position to a new position"""
-        assert 0 <= position <= 1
-        runtime = full_travel_duration * abs(position - self.position)
-        if position > self.position:
-            print(f"extending {self.name} from {self.position} to {position} (duration: {round(runtime, 2)})")
-            self.position = position
-            self.extend_pin.high(duration=runtime)
-        elif position < self.position:
-            print(f"retracting {self.name} from {position} to {self.position} (duration: {round(runtime, 2)})")
-            self.position = position
-            self.retract_pin.high(duration=runtime)
+    def move_to(
+        self,
+        new_position: float,
+        full_travel_duration: float = constants.full_extend_duration
+    ) -> None:
+        """
+        Move this surface from its current position to a new position.
+
+        :param new_position: a value between 0 and 1, representing the new position to which the pin should be moved.
+        :param full_travel_duration: the total travel duration in seconds which will be multiplied by the absolute
+                                     value of the difference between the surfaces current position and the new_position
+                                     to determine how long the appropriate pin should be set high.
+        """
+        assert 0 <= new_position <= 1, (
+            f"`Surface.move_to()` (the '{self.name}' instance) was called with a `new_position` of {new_position}. "
+            f"The `new_position` value must be greater than or equal to 0 and less than or equal to 1."
+        )
+
+        duration = full_travel_duration * abs(new_position - self.position)
+        if new_position > self.position:
+            self.logger.info(
+                f"extending {self.name} from {self.position} to {new_position} (duration: {round(duration, 2)})"
+            )
+            self.position = new_position
+            self.extend_pin.high(duration=duration)
+        elif new_position < self.position:
+            self.logger.info(
+                f"retracting {self.name} from {new_position} to {self.position} (duration: {round(duration, 2)})"
+            )
+            self.position = new_position
+            self.retract_pin.high(duration=duration)
         else:
-            print(f"{self.name} is already at {position}")
+            self.logger.info(f"{self.name} is already at {new_position}")
 
     def increment(self) -> None:
         """Extend this control surface by `increment_by`, supports + and - in the UI Active Screen."""
         if round(self.position + self.increment_by, 2) <= 1:
-            print(f'{self.name} extending from {self.position} to {round(self.position + self.increment_by, 2)}')
+            self.logger.info(
+                f'extending from {self.position} to {round(self.position + self.increment_by, 2)}'
+            )
             self.position = round(self.position + self.increment_by, 2)
             self.extend_pin.high(self.service_duration * self.increment_by)
 
     def decrement(self) -> None:
         """Retract this control surface by `increment_by`, supports + and - in the UI Active Screen."""
         if round(self.position - self.increment_by, 2) >= 0:
-            print(f'{self.name} retracting from {self.position} to {round(self.position - self.increment_by, 2)}')
+            self.logger.info(
+                f'retracting from {self.position} to {round(self.position - self.increment_by, 2)}'
+            )
             self.position = round(self.position - self.increment_by, 2)
             self.retract_pin.high(self.service_duration * self.increment_by)
 
 
 class Pin:
+    """
+    Control class for a single Pin.
 
-    def __init__(self, pin_number: int) -> None:
-        GPIO.setup([pin_number], GPIO.OUT)
-        self.number = pin_number
+    - Each `Surface` instance will have two `Pin` instances.
+    - One which extends the surface when set high, another which retracts the surface when set high.
+    """
 
-    def high(self, duration: int = None) -> None:
-        """Set a pin high."""
+    def __init__(self, surface: Surface, name: str, number: int) -> None:
+        self.name = name
+        self.number = number
+        self.surface = surface
+        self.logger = logging.getLogger(f"Surf.Controller.{self.surface.name}.{self.number}")
+        GPIO.setup([self.number], GPIO.OUT)
+        self.logger.info(f"{self.surface.name} {self.name}s on pin: {self.number}")
+
+    def high(self, duration: float = None) -> None:
+        """
+        Set this pin high.
+
+        :param duration: seconds the pin should be set high. if no duration is given the pin will remain high.
+        """
         GPIO.output(self.number, True)
         if duration:
             time.sleep(duration)
             self.low()
 
     def low(self) -> None:
-        """Set a pin low."""
+        """
+        Set this pin low.
+
+        If a `high` is called with a duration, this method will be called after that duration is over.
+        """
         GPIO.output(self.number, False)
 
 

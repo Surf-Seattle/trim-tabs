@@ -124,21 +124,6 @@ def first_time_setup_check():
     first_time_set_up.SetUpProfiles()
     first_time_set_up.SetUpConstants()
 
-def get_constant(name: str) -> float:
-    """Retrieve a value from constants.yml"""
-    constants = yaml.safe_load(
-        open(os.path.dirname(__file__) + "/../config/constants.yml", "r")
-    )
-    return constants[name]
-
-
-def get_actuators() -> dict:
-    """Retrieve the contents of actuators.yml"""
-    actuators = yaml.safe_load(
-        open(os.path.dirname(__file__) + "/../config/actuators.yml", "r")
-    )
-    return {k: v for k, v in actuators.items() if v["enabled"]}
-
 
 def get_relay_time(actuator_position, new_position) -> float:
     """Determine how long a pin needs to be high."""
