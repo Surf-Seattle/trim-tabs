@@ -32,7 +32,7 @@ def create_logger() -> logging.Logger:
     logger.setLevel(logging.DEBUG)
 
     # create a formatter
-    formatter = logging.Formatter('%(asctime)s %(name)20s %(filename)30s  %(funcName)35s %(lineno)3s %(levelname)8s: %(message)s')
+    formatter = logging.Formatter('%(asctime)s %(name)30s %(filename)20s  %(funcName)30s %(lineno)3s %(levelname)8s: %(message)s')
 
     # create rotating file handler
     file_handler = logging.handlers.RotatingFileHandler(
