@@ -115,7 +115,7 @@ class ControlSurfaces:
 
         # explain to the user what is about to happen
         for surface_name, manifest in change_manifest.items():
-            self.ogger.info(
+            self.logger.info(
                 f"{manifest[1]}ing {surface_name} from "
                 f"{self.surfaces[surface_name].position} to {new_positions[surface_name]}"
             )
@@ -260,7 +260,7 @@ class Pin:
         """
         GPIO.output(self.number, True)
         if duration:
-            self.logger.info(f"set HIGH for {duration} seconds.")
+            self.logger.info(f"set HIGH for {round(duration, 4)} seconds.")
             time.sleep(duration)
             self.low()
         else:
