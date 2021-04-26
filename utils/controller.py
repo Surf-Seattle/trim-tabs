@@ -5,7 +5,7 @@ import yaml
 import os
 import logging
 
-from utils import CONFIG_DIR
+from utils import CONFIG_DIR, logger
 
 
 class Constants:
@@ -115,7 +115,7 @@ class ControlSurfaces:
 
         # explain to the user what is about to happen
         for surface_name, manifest in change_manifest.items():
-            self.logger.info(
+            logger.info(
                 f"{manifest[1]}ing {surface_name} from "
                 f"{self.surfaces[surface_name].position} to {new_positions[surface_name]}"
             )
