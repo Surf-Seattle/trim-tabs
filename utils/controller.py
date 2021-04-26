@@ -258,11 +258,11 @@ class Pin:
         """
         GPIO.output(self.number, True)
         if duration:
-            self.logger.info(f"set HIGH for {round(duration, 4)} seconds.")
+            self.logger.info(f"Pin {self.number} HIGH ({round(duration, 4)} seconds)")
             time.sleep(duration)
             self.low()
         else:
-            self.logger.info(f"set HIGH (indefinitely)")
+            self.logger.info(f"Pin {self.number} HIGH (indefinitely)")
 
     def low(self) -> None:
         """
@@ -270,7 +270,7 @@ class Pin:
 
         If a `high` is called with a duration, this method will be called after that duration is over.
         """
-        self.logger.info("set LOW.")
+        self.logger.info(f"Pin {self.number} LOW.")
         GPIO.output(self.number, False)
 
 
