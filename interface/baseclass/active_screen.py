@@ -75,6 +75,12 @@ class ControlPanel(BoxLayout):
             self.ids.interactive_controls.add_widget(tab_control)
 
         self.controller = controller.Controller()
+        self.controller.move_to(
+            {
+                control_surface_name
+                for control_surface_name in config.control_surfaces_attribute('name')[::-1]
+            }
+        )
 
     def disable_controls(self) -> None:
         """Disable the ActiveScreen controls."""
@@ -167,6 +173,7 @@ class TabControl(MDBoxLayout):
         logger.info(f"[UI] Updating '{self.id}' value from '{self.get_value()}' to '{new_value}'")
         self.ids.control_surface_value.text = str(int(new_value))
         self.refresh_controls()
+        self.screen.controller.surfaces[self.id].move_to(new_value/100)
 
     def get_value(self) -> None:
         return int(self.ids.control_surface_value.text)
