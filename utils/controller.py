@@ -236,7 +236,7 @@ class Controller:
         """
         # order the durations from smallest to largest
         self.logger.info(f"durations = {durations}")
-        remaining_durations = sorted(list(durations.items()))
+        remaining_durations = sorted(list(durations.values()))
         duration_differences = []
         # execute the following until the `remaining_durations` list is empty...
         while remaining_durations:
