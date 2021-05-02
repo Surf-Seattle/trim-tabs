@@ -156,7 +156,7 @@ class Controller:
     def low(self, pin_numbers: List[str]) -> None:
         """Given a list of pin-numbers, set each of those pins LOW."""
         for surface in self.surfaces.values():
-            for pin in list(surface):
+            for pin in [surface.extend_pin, surface.retract_pin]:
                 if pin.number in pin_numbers:
                     pin.low()
 
