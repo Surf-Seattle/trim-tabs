@@ -115,6 +115,13 @@ class Controller:
                 self.surfaces[surface_name].extend_pin.high()
 
         # then after each interval gap, turn off the satisfied pins
+        self.logger.info('----')
+        self.logger.info(
+            {
+                surface_name: manifest["duration"]
+                for surface_name, manifest in change_manifest.items()
+            }
+        )
         deactive_surfaces_after = self.deactive_surfaces_after(
             {
                 surface_name: manifest["duration"]
