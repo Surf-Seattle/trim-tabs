@@ -108,9 +108,8 @@ class Controller:
         # set all of the target pins high to start
         self.logger.info(change_manifest)
         self.logger.info(self.surfaces[surface_name])
-        self.logger.info(dict(self.surfaces[surface_name]))
         for surface_name, manifest in change_manifest.items():
-            dict(self.surfaces[surface_name])[manifest["action"]].high()
+            self.surfaces[surface_name][manifest["action"]].high()
 
         # then after each interval gap, turn off the satisfied pins
         deactive_surfaces_after = self.deactive_surfaces_after(
