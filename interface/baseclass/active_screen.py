@@ -93,7 +93,7 @@ class ControlPanel(BoxLayout):
             self.initial_values = config['control_surfaces']
 
         self.profile_name = config['name']
-        self.logger.info(config['control_surfaces'])  # TODO: delete me
+        logger.info(config['control_surfaces'])  # TODO: delete me
         for tab_control_name, tab_control_widget in self.tab_control_ids.items():
             tab_control_widget.set_value(config['control_surfaces'][tab_control_name])
 
