@@ -177,7 +177,7 @@ class TabControl(MDBoxLayout):
         logger.info(f"[UI] Updating '{self.id}' value from '{self.get_value()}' to '{new_value}'")
         self.ids.control_surface_value.text = str(int(new_value))
         self.refresh_controls()
-        self.screen.controller.surfaces[self.id].move_to(new_value/100)
+        # self.screen.controller.surfaces[self.id].move_to(new_value/100)
 
     def get_value(self) -> None:
         return int(self.ids.control_surface_value.text)
