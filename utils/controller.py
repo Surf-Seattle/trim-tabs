@@ -219,8 +219,7 @@ class Controller:
         }
         return change_manifest
 
-    @staticmethod
-    def duration_differences(durations: Set[float]) -> List[float]:
+    def duration_differences(self, durations: Set[float]) -> List[float]:
         """
         Given a set of durations, return the list of the differences between them.
 
@@ -236,6 +235,7 @@ class Controller:
         :return: an list which divides up those differences (order matters)
         """
         # order the durations from smallest to largest
+        self.logger.info(f"durations = {durations}")
         remaining_durations = sorted(list(durations))
         duration_differences = []
         # execute the following until the `remaining_durations` list is empty...
