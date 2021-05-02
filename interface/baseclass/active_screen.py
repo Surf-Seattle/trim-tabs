@@ -75,18 +75,14 @@ class ControlPanel(BoxLayout):
             self.ids.interactive_controls.add_widget(tab_control)
 
         self.controller = controller.Controller()
-        self.controller.move_to(
-            {
-                control_surface_name
-                for control_surface_name in config.control_surfaces_attribute('name')[::-1]
-            }
-        )
 
     def disable_controls(self) -> None:
         """Disable the ActiveScreen controls."""
         self.profile_name = ''
         for tab_control_widget in self.tab_control_ids.values():
             tab_control_widget.disable()
+
+        self.controller.retract_pins(blindly=True)
 
     def enable_controls(self, username: str) -> None:
         """Enable the ActiveScreen controls with values from a WaveProfile yaml file."""
@@ -98,6 +94,13 @@ class ControlPanel(BoxLayout):
         self.profile_name = config['name']
         for tab_control_name, tab_control_widget in self.tab_control_ids.items():
             tab_control_widget.set_value(config['control_surfaces'][tab_control_name])
+
+        self.controller.move_to(
+            {
+                tab_control_name: config['control_surfaces'][tab_control_name]
+                for tab_control_name, tab_control_widget in self.tab_control_ids.items()
+            }
+        )
 
     def invert(self) -> None:
         """Mirror the Controls, either `Goofy` or `Regular` was pressed."""
