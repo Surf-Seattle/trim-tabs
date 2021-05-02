@@ -95,7 +95,7 @@ class ControlPanel(BoxLayout):
         for tab_control_name, tab_control_widget in self.tab_control_ids.items():
             tab_control_widget.set_value(config['control_surfaces'][tab_control_name])
 
-        self.controller.move_to(
+        self.screen.controller.move_to(
             {
                 tab_control_name: config['control_surfaces'][tab_control_name]
                 for tab_control_name, tab_control_widget in self.tab_control_ids.items()
