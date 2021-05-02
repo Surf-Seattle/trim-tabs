@@ -238,7 +238,7 @@ class Controller:
         # order the durations from smallest to largest
         remaining_durations = sorted(list(durations))
         duration_differences = []
-        logging.getLogger('Debuggin').logger.info(f"remaining_durations = {remaining_durations}")
+        logging.getLogger('Debuggin').info(f"remaining_durations = {remaining_durations}")
         # execute the following until the `remaining_durations` list is empty...
         while remaining_durations:
 
