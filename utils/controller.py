@@ -238,7 +238,6 @@ class Controller:
         # order the durations from smallest to largest
         remaining_durations = sorted(list(durations))
         duration_differences = []
-        logging.getLogger('Debuggin').info(f"remaining_durations = {remaining_durations}")
         # execute the following until the `remaining_durations` list is empty...
         while remaining_durations:
 
@@ -284,7 +283,9 @@ class Controller:
         # each difference, create a list of surfaces that should be HIGH for that part of the total duration
         # example: transform {"A": 10, "B": 4, "C": 1} to [(1, ["A", "B", "C"]), (3, ["A", "B"]), (6, ["A"])]
         duration_groups = []
+        logging.getLogger('Debugging').info(f"surface_durations = {surface_durations}")
         for duration in cls.duration_differences(surface_durations):
+            logging.getLogger('Debugging').info(f"duration = {duration}")
             # the surfaces which will be active during this duration will
             # be those whose `remaining_duration` is greater than this duration.
             duration_groups.append(
