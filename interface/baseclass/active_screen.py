@@ -13,6 +13,7 @@ from kivymd.uix.screen import MDScreen
 from .tab_navigation import NavigationBar
 
 from utils import (
+    controller,
     logger,
     utilities as u
 )
@@ -73,6 +74,8 @@ class ControlPanel(BoxLayout):
             self.tab_control_ids[control_surface_name] = tab_control
             self.ids.interactive_controls.add_widget(tab_control)
 
+        self.controller = controller.Controller()
+
     def disable_controls(self) -> None:
         """Disable the ActiveScreen controls."""
         self.profile_name = ''
@@ -95,6 +98,7 @@ class ControlPanel(BoxLayout):
         current_values = self.current_values.copy()
         for current_name, goofy_name in u.Configuration().goofy_map.items():
             self.tab_control_ids[goofy_name].set_value(current_values[current_name])
+        self.controller.invert()
 
     @property
     def current_values(self) -> dict:
@@ -137,6 +141,7 @@ class TabControl(MDBoxLayout):
             logger.debug(f"[UI] Incrementing '{self.id}' value.")
             self.set_value(self.get_value() + 5)
             u.get_root_screen(self).active_bar.refresh()
+            self.screen.controller.sufaces[self.id].increment()
 
     def decrement(self, *args) -> None:
         if self.prevent_decrement:
@@ -147,6 +152,7 @@ class TabControl(MDBoxLayout):
             logger.debug(f"[UI] Decrementing '{self.id}' value.")
             self.set_value(self.get_value() - 5)
             u.get_root_screen(self).active_bar.refresh()
+            self.screen.controller.sufaces[self.id].decrement()
 
     def disable(self) -> None:
         """Disable This """
