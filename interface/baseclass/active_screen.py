@@ -82,7 +82,8 @@ class ControlPanel(BoxLayout):
         for tab_control_widget in self.tab_control_ids.values():
             tab_control_widget.disable()
 
-        self.controller.retract_pins(blindly=True)
+        if hasattr(self, 'controller'):
+            self.controller.retract_pins(blindly=True)
 
     def enable_controls(self, username: str) -> None:
         """Enable the ActiveScreen controls with values from a WaveProfile yaml file."""
