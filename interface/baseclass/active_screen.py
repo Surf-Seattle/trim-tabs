@@ -141,7 +141,7 @@ class TabControl(MDBoxLayout):
             logger.debug(f"[UI] Incrementing '{self.id}' value.")
             self.set_value(self.get_value() + 5)
             u.get_root_screen(self).active_bar.refresh()
-            self.screen.controller.sufaces[self.id].increment()
+            self.screen.controller.surfaces[self.id].increment()
 
     def decrement(self, *args) -> None:
         if self.prevent_decrement:
@@ -152,7 +152,7 @@ class TabControl(MDBoxLayout):
             logger.debug(f"[UI] Decrementing '{self.id}' value.")
             self.set_value(self.get_value() - 5)
             u.get_root_screen(self).active_bar.refresh()
-            self.screen.controller.sufaces[self.id].decrement()
+            self.screen.controller.surfaces[self.id].decrement()
 
     def disable(self) -> None:
         """Disable This """
