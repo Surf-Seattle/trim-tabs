@@ -241,7 +241,7 @@ class Controller:
             # loop through the `remaining_durations` and subtract value which was just removed from
             # `remaining_durations` (which was the smallest remaining) from durations still in `remaining_durations`
             remaining_durations = [
-                remaining_duration - duration_differences[-1]
+                float(remaining_duration) - float(duration_differences[-1])
                 for remaining_duration in remaining_durations
             ]
         return duration_differences
