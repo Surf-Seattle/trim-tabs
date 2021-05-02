@@ -133,7 +133,7 @@ class Controller:
             time.sleep(partial_duration)
             for surface_name in surface_names:
                 manifest = change_manifest[surface_name]
-                getattr(self.surfaces[surface_name], f"{manifest[1]}_pin").low()
+                getattr(self.surfaces[surface_name], f"{manifest["duration"]}_pin").low()
                 self.surfaces[surface_name].position = new_positions[surface_name]
 
     def high(self, pin_numbers: List[str], duration: float = None) -> None:
