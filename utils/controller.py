@@ -252,8 +252,7 @@ class Controller:
             ]
         return duration_differences
 
-    @classmethod
-    def deactive_surfaces_after(cls, surface_durations):
+    def deactive_surfaces_after(self, surface_durations):
         """
         Restructure a `surface_duration` dict to simplify the execution of pin movements with different durations.
 
@@ -283,9 +282,9 @@ class Controller:
         # each difference, create a list of surfaces that should be HIGH for that part of the total duration
         # example: transform {"A": 10, "B": 4, "C": 1} to [(1, ["A", "B", "C"]), (3, ["A", "B"]), (6, ["A"])]
         duration_groups = []
-        logging.getLogger('Debugging').info(f"surface_durations = {surface_durations}")
-        for duration in cls.duration_differences(surface_durations):
-            logging.getLogger('Debugging').info(f"duration = {duration}")
+        self.logger.info(f"surface_durations = {surface_durations}")
+        for duration in self.duration_differences(surface_durations):
+            self.logger.info(f"duration = {duration}")
             # the surfaces which will be active during this duration will
             # be those whose `remaining_duration` is greater than this duration.
             duration_groups.append(
