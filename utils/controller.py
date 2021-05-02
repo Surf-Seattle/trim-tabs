@@ -144,7 +144,7 @@ class Controller:
         :param duration: optionally, how many seconds the pins show be kept high. If not given, left high indefinitely.
         """
         for surface in self.surfaces.values():
-            for pin in list(surface):
+            for pin in [surface.extend_pin, surface.retract_pin]:
                 if pin.number in pin_numbers:
                     pin.high()
 
