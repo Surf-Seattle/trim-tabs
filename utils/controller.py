@@ -109,7 +109,10 @@ class Controller:
         self.logger.info(change_manifest)
         self.logger.info(self.surfaces[surface_name])
         for surface_name, manifest in change_manifest.items():
-            self.surfaces[surface_name][manifest["action"]].high()
+            if manifest["action"] == 'retract':
+                self.surfaces[surface_name].retract_pin.high()
+            elif manifest["action"] == 'extend':
+                self.surfaces[surface_name].extend_pin.high()
 
         # then after each interval gap, turn off the satisfied pins
         deactive_surfaces_after = self.deactive_surfaces_after(
