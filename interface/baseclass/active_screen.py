@@ -98,7 +98,7 @@ class ControlPanel(BoxLayout):
 
         self.controller.move_to(
             {
-                tab_control_name: config['control_surfaces'][tab_control_name]
+                tab_control_name: config['control_surfaces'][tab_control_name]/100
                 for tab_control_name, tab_control_widget in self.tab_control_ids.items()
             }
         )
