@@ -1,4 +1,4 @@
-# Install Miniconda
+'# Install Miniconda
 
 * First check to see if you have miniconda installed.
 
@@ -183,3 +183,17 @@ Run the app for the first time:
 
 > running `rm -rf ~/.surf/` is discouraged because it will
 > delete existing log files which may be useful for debugging.
+
+
+* Simply running `rm -rf ~/.surf/` is discouraged because it will
+  delete existing log files which may be useful for debugging.
+
+
+# Enabling Raspberry Pi touch screen
+* In the kivy config file:
+    \> nano ~/.kivy/config.ini
+  Add remove the lines under the [input] heading and replace with:
+    mouse = mouse
+    mtdev_%(name)s = probesysfs,provider=mtdev
+    hid_%(name)s = probesysfs,provider=hidinput
+  This allows the touchscreen input to be seen by the trim-tabs interface.
