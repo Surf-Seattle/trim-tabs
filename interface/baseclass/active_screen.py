@@ -71,14 +71,12 @@ class ControlPanel(BoxLayout):
         """Disable the ActiveScreen controls."""
         if self.tab_control_ids:
             for surface_name, surface_value in controller.deactivate_profile().items():
-                self.tab_control_ids[surface_name].set_value(surface_value)
                 self.tab_control_ids[surface_name].disable()
 
     def enable_controls(self, username: str) -> None:
         """Enable the ActiveScreen controls with values from a WaveProfile yaml file."""
-        controller.activate_profile(username)
-        # for surface_name, surface_value in controller.activate_profile(username).items():
-        #     self.tab_control_ids[surface_name].set_value(surface_value)
+        for surface_name, surface_value in controller.activate_profile(username).items():
+            self.tab_control_ids[surface_name].enable()
 
     def invert(self) -> None:
         """Mirror the Controls, either `Goofy` or `Regular` was pressed."""
