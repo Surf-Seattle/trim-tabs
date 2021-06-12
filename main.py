@@ -55,6 +55,7 @@ if __name__ == '__main__':
         print('using fullscreen')
         Config.set('graphics', 'window_state', 'maximized')
         Config.set('graphics', 'fullscreen', 'auto')
+        Window.show_cursor = False
         Config.write()
     else:
         print('using windowed screen')
@@ -62,5 +63,6 @@ if __name__ == '__main__':
         Config.set('graphics', 'width', '500')
         Config.set('graphics', 'height', '500')
         Config.set('graphics', 'fullscreen', 'false')
+        Window.show_cursor = True
         Config.write()
     MDSurf().run()
