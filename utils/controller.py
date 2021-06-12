@@ -102,7 +102,7 @@ class Controller:
             self.high(
                 self.retract_pins,
                 travel=1.0,
-                extract_or_retract='retract'
+                action_mode='withdraw'
             )
         else:
             self.move_to(
@@ -110,7 +110,7 @@ class Controller:
                     surface_name: 0
                     for surface_name in self.surfaces
                 },
-                full_travel_duration=self.full_retract_duration,
+                action_mode='deploy'
             )
 
     def move_to(self, new_positions: dict, action_mode: str = 'deploy') -> None:
