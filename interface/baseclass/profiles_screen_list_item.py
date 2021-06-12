@@ -67,7 +67,6 @@ class SurfListItem(ThemableBehavior, ButtonBehavior, MDBoxLayout):
         u.get_screen(self, "PROFILES").set_all_list_item_buttons('START')
         self.ids.activate_button.text = 'STOP'
 
-
     def deactivate(self) -> None:
         self.ids.activate_button.text = 'START'
 

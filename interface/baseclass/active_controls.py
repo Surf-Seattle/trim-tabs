@@ -11,6 +11,8 @@ from utils import (
     utilities as u
 )
 
+from utils.controller import controller
+
 
 class ActiveBar(ThemableBehavior, MDBoxLayout):
     profile_name = StringProperty()
@@ -29,12 +31,11 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         Update the Active Profile Name and Enable or Disable the Goofy and Regular Buttons.
         Attributes of the ACTIVE screen control_panel are used to refresh the ActiveBar
         """
-        self.profile_name = u.get_root_screen(self).screen_manager.get_screen("ACTIVE").ids.control_panel.profile_name
-        current_values = u.get_root_screen(self).screen_manager.get_screen("ACTIVE").ids.control_panel.current_values
-        if current_values['PORT'] > current_values['STARBOARD']:
+        self.profile_name = controller.active_profile
+        if controller.values['PORT'] > controller.values['STARBOARD']:
             self.ids.regular_button.disabled = True
             self.ids.goofy_button.disabled = False
-        elif current_values['PORT'] < current_values['STARBOARD']:
+        elif controller.values['PORT'] < controller.values['STARBOARD']:
             self.ids.regular_button.disabled = False
             self.ids.goofy_button.disabled = True
         else:
