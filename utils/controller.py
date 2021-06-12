@@ -424,6 +424,10 @@ class Surface:
     def __dict__(self):
         return {'extend': self.extend_pin, 'retract': self.retract_pin}
 
+    @property
+    def value(self) -> int:
+        return self.position * 100
+
     def move_to(
         self,
         new_position: float,
@@ -466,8 +470,7 @@ class Surface:
             )
             self.position = round(self.position + self.increment_by, 2)
             self.extend_pin.high(self.controller.travel_durations[1]['deploy'] * self.increment_by)
-        else:
-            raise self.CannotIncrement(self)
+        return self.value
 
     def decrement(self) -> None:
         """Retract this control surface by `increment_by`, supports + and - in the UI Active Screen."""
@@ -477,20 +480,8 @@ class Surface:
             )
             self.position = round(self.position - self.increment_by, 2)
             self.retract_pin.high(self.controller.travel_durations[1]['deploy'] * self.increment_by)
-        else:
-            raise self.CannotDecrement(self)
+        return self.value
 
-    class CannotIncrement(Exception):
-
-        def __init__(self, surface) -> None:
-            surface.logger.warning("Cannot Increment {surface.name}")
-            super().__init__("Cannot Increment {surface.name}")
-
-    class CannotDecrement(Exception):
-
-        def __init__(self, surface) -> None:
-            surface.logger.warning("Cannot Decrement {surface.name}")
-            super().__init__("Cannot Increment {surface.name}")
 
 
 
