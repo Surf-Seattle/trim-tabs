@@ -77,15 +77,12 @@ class ControlPanel(BoxLayout):
     def enable_controls(self, username: str) -> None:
         """Enable the ActiveScreen controls with values from a WaveProfile yaml file."""
         for surface_name, surface_value in controller.activate_profile(username).items():
-
             self.tab_control_ids[surface_name].value = surface_value
-            self.tab_control_ids[surface_name].enable_increment()
-            self.tab_control_ids[surface_name].enable_decrement()
 
     def invert(self) -> None:
         """Mirror the Controls, either `Goofy` or `Regular` was pressed."""
         for surface_name, surface_value in controller.invert().items():
-            self.tab_control_ids[surface_name].set_value(surface_value)
+            self.tab_control_ids[surface_name].value = surface_value
 
 
 class TabControl(MDBoxLayout):
@@ -107,22 +104,14 @@ class TabControl(MDBoxLayout):
     def increment(self, *args) -> None:
         try:
             controller.surfaces[self.id].increment()
-            logger.warning(f"TabControl.id = {self.id}")
-            logger.warning(f"controller.values = {controller.values}")
+        finally:
             self.value = controller.values.get(self.id, -1)
-            self.enable_increment()
-        except Surface.CannotDecrement:
-            self.disable_increment()
 
     def decrement(self, *args) -> None:
         try:
             controller.surfaces[self.id].decrement()
-            logger.warning(f"TabControl.id = {self.id}")
-            logger.warning(f"controller.values = {controller.values}")
+        finally:
             self.value = controller.values.get(self.id, -1)
-            self.enable_decrement()
-        except Surface.CannotDecrement:
-            self.disable_decrement()
 
     @property
     def value(self):
