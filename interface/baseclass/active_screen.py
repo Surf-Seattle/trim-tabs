@@ -112,7 +112,7 @@ class TabControl(MDBoxLayout):
 
     @property
     def value(self) -> None:
-        return controller.values[self.id]
+        return controller.values.get(self.id, -1)
 
 
 
