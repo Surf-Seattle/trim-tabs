@@ -85,6 +85,7 @@ class Controller:
         self.retract(blindly=True)
         return self.values
 
+    @property
     def surface_display_order(self) -> list:
         return [surface['name'] for surface in self.config][::-1]
 
