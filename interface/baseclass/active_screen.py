@@ -77,6 +77,7 @@ class ControlPanel(BoxLayout):
     def enable_controls(self, username: str) -> None:
         """Enable the ActiveScreen controls with values from a WaveProfile yaml file."""
         for surface_name, surface_value in controller.activate_profile(username).items():
+            self.tab_control_ids[surface_name].value = surface_value
             self.tab_control_ids[surface_name].enable_increment()
             self.tab_control_ids[surface_name].enable_decrement()
 
