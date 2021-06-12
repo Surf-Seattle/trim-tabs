@@ -69,7 +69,6 @@ class ControlPanel(BoxLayout):
 
     def disable_controls(self) -> None:
         """Disable the ActiveScreen controls."""
-        controller.retract_pins(blindly=True)
         for surface_name, surface_value in controller.deactivate_profile().items():
             self.tab_control_ids[surface_name].set_value(surface_value)
             self.tab_control_ids[surface_name].disable()
