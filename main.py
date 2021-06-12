@@ -4,6 +4,7 @@ import click
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivy.config import Config
+from kivy.core.window import Window
 
 from utils import (
     logger,
@@ -55,7 +56,6 @@ if __name__ == '__main__':
         print('using fullscreen')
         Config.set('graphics', 'window_state', 'maximized')
         Config.set('graphics', 'fullscreen', 'auto')
-        Window.show_cursor = False
         Config.write()
     else:
         print('using windowed screen')
