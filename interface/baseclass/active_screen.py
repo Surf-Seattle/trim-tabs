@@ -107,12 +107,14 @@ class TabControl(MDBoxLayout):
             controller.surfaces[self.id].increment()
         finally:
             self.value = controller.values.get(self.id, -1)
+            print(controller.values.get(self.id, -1))
 
     def decrement(self, *args) -> None:
         try:
             controller.surfaces[self.id].decrement()
         finally:
             self.value = controller.values.get(self.id, -1)
+            print(controller.values.get(self.id, -1))
 
     @property
     def value(self):
