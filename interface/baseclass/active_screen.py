@@ -103,6 +103,7 @@ class TabControl(MDBoxLayout):
 
     def increment(self, *args) -> None:
         try:
+            logger.info("TabControl.increment() calling Surface.increment()")
             controller.surfaces[self.id].increment()
         finally:
             self.value = controller.values.get(self.id, -1)
