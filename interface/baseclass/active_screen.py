@@ -136,7 +136,7 @@ class TabControl(MDBoxLayout):
             self._value = new_value
             self.enable_both()
 
-        self.ids.control_surface_value.text = int(self._value)
+        self.ids.control_surface_value.text = str(int(self._value))
 
     def disable_increment(self) -> None:
         logger.debug(f'[UI]\t"{self.id}" Controls: Disabling Increment, Enabling Decrement')
