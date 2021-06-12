@@ -19,6 +19,8 @@ class SurfRootScreen(MDScreen):
         Clock.schedule_once(self.globalize_screen_manager)
         if os.environ.get('FULLSCREEN', "true") != "true":
             Window.show_cursor = False
+        else:
+            Window.show_cursor = True
 
     def globalize_screen_manager(self, *args):
         self.screen_manager = [i for i in self.children[0].children if type(i).__name__ == 'ScreenManager'][0]
