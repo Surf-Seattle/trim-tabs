@@ -113,6 +113,8 @@ class TabControl(MDBoxLayout):
 
     @property
     def value(self) -> None:
+        logger.warning(f"TabControl.id = {self.id}")
+        logger.warning(f"controller.values = {controller.values}")
         return controller.values.get(self.id, -1)
 
     def disable_increment(self) -> None:
