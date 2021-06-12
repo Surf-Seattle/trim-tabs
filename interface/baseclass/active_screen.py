@@ -77,6 +77,7 @@ class ControlPanel(BoxLayout):
     def enable_controls(self, username: str) -> None:
         """Enable the ActiveScreen controls with values from a WaveProfile yaml file."""
         for surface_name, surface_value in controller.activate_profile(username).items():
+
             self.tab_control_ids[surface_name].value = surface_value
             self.tab_control_ids[surface_name].enable_increment()
             self.tab_control_ids[surface_name].enable_decrement()
@@ -98,6 +99,9 @@ class TabControl(MDBoxLayout):
         super().__init__()
         self.id = kwargs['id']
         self.value = -2
+        self.max = 100
+        self.min = 0
+        self._value
 
     def increment(self, *args) -> None:
         try:
@@ -119,20 +123,44 @@ class TabControl(MDBoxLayout):
         except Surface.CannotDecrement:
             self.disable_decrement()
 
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        if new_value < self.min:
+            self.disable_decrement()
+        elif new_value == self.min:
+            self._value = new_value
+            self.disable_decrement()
+        elif new_value > self.max:
+            self.disable_increment()
+        elif new_value == self.max:
+            self._value = new_value
+            self.disable_increment()
+        else:
+            self._value = new_value
+            self.enable_both()
+
     def disable_increment(self) -> None:
-        logger.debug(f'[UI]\tDisabling "{self.id}" Increment Button')
+        logger.debug(f'[UI]\t"{self.id}" Controls: Disabling Increment, Enabling Decrement')
         self.ids.increment_control.disabled = True
+        self.ids.decrement_control.disabled = False
 
     def disable_decrement(self) -> None:
-        logger.debug(f'[UI]\tDisabling "{self.id}" Decrement Button')
+        logger.debug(f'[UI]\t"{self.id}" Controls: Disabling Decrement, Enabling Increment')
         self.ids.decrement_control.disabled = True
-
-    def enable_increment(self) -> None:
-        logger.debug(f'[UI]\tEnabling "{self.id}" Increment Button')
         self.ids.increment_control.disabled = False
 
-    def enable_decrement(self) -> None:
-        logger.debug(f'[UI]\tEnabling "{self.id}" Decrement Button')
+    def disable_both(self) -> None:
+        logger.debug(f'[UI]\t"{self.id}" Controls: Disabling Decrement, Disabling Increment')
+        self.ids.increment_control.disabled = True
+        self.ids.decrement_control.disabled = True
+
+    def enable_both(self) -> None:
+        logger.debug(f'[UI]\t"{self.id}" Controls: Enabling Decrement, Enabling Increment')
+        self.ids.increment_control.disabled = False
         self.ids.decrement_control.disabled = False
 
 
