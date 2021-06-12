@@ -1,11 +1,8 @@
 import os
-import yaml
-import kivymd
 
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivy.config import Config
-from kivy.core.window import Window
 
 from utils import (
     logger,
@@ -13,10 +10,6 @@ from utils import (
     utilities as u,
     controller
 )
-
-Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
-Config.set('graphics', 'width', '500')
-Config.set('graphics', 'height', '500')
 
 
 KV = """
@@ -47,8 +40,6 @@ class MDSurf(MDApp):
     def build(self):
         self.theme_cls.primary_palette = "Green"
         self.theme_cls.theme_style = "Dark"
-        Window.size = (800, 480)
-        Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
         return Builder.load_string(KV)
 
 
@@ -59,4 +50,12 @@ if __name__ == '__main__':
     logger.info('')
     u.first_time_setup_check()
     controller.start()
+    if os.environ.get('FULLSCREEN', "true") == "true":
+        Config.set('graphics', 'fullscreen', 'auto')
+        Config.set('graphics', 'window_state', 'maximized')
+    else:
+        Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
+        Config.set('graphics', 'width', '500')
+        Config.set('graphics', 'height', '500')
+    Config.write()
     MDSurf().run()

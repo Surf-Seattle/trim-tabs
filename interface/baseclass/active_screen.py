@@ -8,9 +8,7 @@ from kivy.properties import (
 )
 
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.gridlayout import GridLayout
 from kivymd.uix.screen import MDScreen
-from .tab_navigation import NavigationBar
 
 from utils import (
     logger,
