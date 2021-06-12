@@ -59,5 +59,5 @@ if __name__ == '__main__':
         Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
         Config.set('graphics', 'width', '500')
         Config.set('graphics', 'height', '500')
-    Config.write()
+    # Config.write()
     MDSurf().run()
