@@ -71,12 +71,14 @@ class ControlPanel(BoxLayout):
         """Disable the ActiveScreen controls."""
         if self.tab_control_ids:
             for surface_name, surface_value in controller.deactivate_profile().items():
-                self.tab_control_ids[surface_name].disable()
+                self.tab_control_ids[surface_name].disable_increment()
+                self.tab_control_ids[surface_name].disable_decrement()
 
     def enable_controls(self, username: str) -> None:
         """Enable the ActiveScreen controls with values from a WaveProfile yaml file."""
         for surface_name, surface_value in controller.activate_profile(username).items():
-            self.tab_control_ids[surface_name].enable()
+            self.tab_control_ids[surface_name].enable_increment()
+            self.tab_control_ids[surface_name].enable_decrement()
 
     def invert(self) -> None:
         """Mirror the Controls, either `Goofy` or `Regular` was pressed."""
@@ -113,6 +115,20 @@ class TabControl(MDBoxLayout):
     def value(self) -> None:
         return controller.values.get(self.id, -1)
 
+    def disable_increment(self) -> None:
+        logger.debug(f'[UI]\tDisabling "{self.id}" Increment Button')
+        self.ids.increment_control.disabled = True
 
+    def disable_decrement(self) -> None:
+        logger.debug(f'[UI]\tDisabling "{self.id}" Decrement Button')
+        self.ids.decrement_control.disabled = True
+
+    def enable_increment(self) -> None:
+        logger.debug(f'[UI]\tEnabling "{self.id}" Increment Button')
+        self.ids.increment_control.disabled = False
+
+    def enable_decrement(self) -> None:
+        logger.debug(f'[UI]\tEnabling "{self.id}" Decrement Button')
+        self.ids.decrement_control.disabled = False
 
 
