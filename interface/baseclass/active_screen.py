@@ -81,6 +81,7 @@ class ControlPanel(BoxLayout):
 
     def invert(self) -> None:
         """Mirror the Controls, either `Goofy` or `Regular` was pressed."""
+        logger.info("----- Invert Pressed -----")
         for surface_name, surface_value in controller.invert().items():
             self.tab_control_ids[surface_name].value = surface_value
 
@@ -102,11 +103,12 @@ class TabControl(MDBoxLayout):
         self._value = -1
 
     def increment(self, *args) -> None:
-        logger.info("TabControl.increment() calling Surface.increment()")
+        logger.info("----- Increment Pressed -----")
         self.value = controller.surfaces[self.id].increment()
         print(controller.values.get(self.id, -1))
 
     def decrement(self, *args) -> None:
+        logger.info("----- Decrement Pressed -----")
         self.value = controller.surfaces[self.id].decrement()
         print(controller.values.get(self.id, -1))
 
