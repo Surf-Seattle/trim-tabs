@@ -1,4 +1,5 @@
 import os
+import click
 
 from kivy.lang import Builder
 from kivymd.app import MDApp
@@ -60,5 +61,6 @@ if __name__ == '__main__':
         Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
         Config.set('graphics', 'width', '500')
         Config.set('graphics', 'height', '500')
+        Config.set('graphics', 'fullscreen', 'false')
         Config.write()
     MDSurf().run()
