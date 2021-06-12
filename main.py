@@ -51,9 +51,11 @@ if __name__ == '__main__':
     u.first_time_setup_check()
     controller.start()
     if os.environ.get('FULLSCREEN', "true") == "true":
-        Config.set('graphics', 'fullscreen', 'auto')
+        print('using fullscreen')
         Config.set('graphics', 'window_state', 'maximized')
+        Config.set('graphics', 'fullscreen', 'auto')
     else:
+        print('using windowed screen')
         Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
         Config.set('graphics', 'width', '500')
         Config.set('graphics', 'height', '500')
