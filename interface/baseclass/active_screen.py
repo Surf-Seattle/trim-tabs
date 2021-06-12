@@ -96,10 +96,14 @@ class TabControl(MDBoxLayout):
     def __init__(self, **kwargs):
         super().__init__()
         self.id = kwargs['id']
+        self.value = -2
 
     def increment(self, *args) -> None:
         try:
             controller.surfaces[self.id].increment()
+            logger.warning(f"TabControl.id = {self.id}")
+            logger.warning(f"controller.values = {controller.values}")
+            self.value = controller.values.get(self.id, -1)
             self.enable_increment()
         except Surface.CannotDecrement:
             self.disable_increment()
@@ -107,15 +111,12 @@ class TabControl(MDBoxLayout):
     def decrement(self, *args) -> None:
         try:
             controller.surfaces[self.id].decrement()
+            logger.warning(f"TabControl.id = {self.id}")
+            logger.warning(f"controller.values = {controller.values}")
+            self.value = controller.values.get(self.id, -1)
             self.enable_decrement()
         except Surface.CannotDecrement:
             self.disable_decrement()
-
-    @property
-    def value(self) -> None:
-        logger.warning(f"TabControl.id = {self.id}")
-        logger.warning(f"controller.values = {controller.values}")
-        return controller.values.get(self.id, -1)
 
     def disable_increment(self) -> None:
         logger.debug(f'[UI]\tDisabling "{self.id}" Increment Button')
