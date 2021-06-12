@@ -90,6 +90,7 @@ class ControlPanel(BoxLayout):
 
 class TabControl(MDBoxLayout):
     id = StringProperty()
+    _value = NumericProperty()
     value = NumericProperty()
     display = StringProperty()
     max = NumericProperty()
@@ -101,7 +102,7 @@ class TabControl(MDBoxLayout):
         self.value = -2
         self.max = 100
         self.min = 0
-        self._value
+        self._value = -1
 
     def increment(self, *args) -> None:
         try:
