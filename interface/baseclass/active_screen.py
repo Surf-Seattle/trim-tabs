@@ -97,14 +97,14 @@ class TabControl(MDBoxLayout):
         super().__init__()
         self.id = kwargs['id']
 
-    def increment(self) -> None:
+    def increment(self, *args) -> None:
         try:
             controller.surfaces[self.id].increment()
             self.enable_increment()
         except Surface.CannotDecrement:
             self.disable_increment()
 
-    def decrement(self) -> None:
+    def decrement(self, *args) -> None:
         try:
             controller.surfaces[self.id].decrement()
             self.enable_decrement()
