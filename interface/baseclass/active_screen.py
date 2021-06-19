@@ -76,6 +76,8 @@ class ControlPanel(BoxLayout):
         if self.tab_control_ids:
             for surface_name in controller.surface_names:
                 self.tab_control_ids[surface_name].disable_both()
+                self.tab_control_ids[surface_name].display_value(0)
+
         logger.info('ControlPanel.disable_controls.end')
 
     def enable_controls(self, username: str) -> None:
@@ -137,6 +139,9 @@ class TabControl(MDBoxLayout):
             self.enable_both()
 
         self.ids.control_surface_value.text = str(int(self._value))
+
+    def display_value(self, display_value) -> None:
+        self._value = display_value
 
     def disable_increment(self) -> None:
         logger.debug(f'[UI]\t"{self.id}" Controls: Disabling Increment, Enabling Decrement')
