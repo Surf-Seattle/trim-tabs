@@ -1,18 +1,9 @@
 import os
-import click
 
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivy.config import Config
 from kivy.core.window import Window
-
-from utils import (
-    logger,
-    UI_KV_DIR,
-    utilities as u,
-    controller
-)
-
 
 KV = """
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
@@ -23,6 +14,8 @@ SurfRootScreen:
     
 
 """
+logger = None
+UI_KV_DIR = None
 
 
 class MDSurf(MDApp):
@@ -45,21 +38,30 @@ class MDSurf(MDApp):
         return Builder.load_string(KV)
 
 
-if __name__ == '__main__':
+def run(pins: bool, fullscreen: bool) -> None:
+    global logger
+    global UI_KV_DIR
+
+    import utils
+    from utils import UI_KV_DIR
+    from utils import utilities as u
+    from utils import logger
+    from utils import controller
+
+    utils.log_startup_details()
 
     logger.info('')
     logger.info('Running MDSurf.')
     logger.info('')
+
     u.first_time_setup_check()
     controller.start()
-    if os.environ.get('FULLSCREEN', "true") == "true":
-        print('using fullscreen')
+    if fullscreen:
         Config.set('graphics', 'window_state', 'maximized')
         Config.set('graphics', 'fullscreen', 'auto')
         Config.write()
     else:
-        print('using windowed screen')
-        Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
+        Config.set('graphics', 'resizable', '0')
         Config.set('graphics', 'width', '800')
         Config.set('graphics', 'height', '500')
         Config.set('graphics', 'fullscreen', 'false')

@@ -1,25 +1,19 @@
-import time
-from typing import List, Set
-import yaml
 import os
+import yaml
+import time
 import logging
+from typing import List, Set
 
-if os.environ.get('PINS', 'on') == 'on':
+if os.environ.get('USE_PINS', 'true') == 'true':
     import RPi.GPIO as GPIO
 
 from utils import CONFIG_DIR
 from utils import utilities as u
 
-
-class Constants:
-    path = os.path.join(CONFIG_DIR, 'constants.yml')
-
-    def __init__(self):
-        for constant_name, constant_value in yaml.safe_load(open(self.path, 'r')).items():
-            setattr(self, constant_name, constant_value)
-
-
-constants = Constants()
+# module level variable populated when `start()` is called
+# this same instance of the variable can be imported from this
+# module anywhere that this module can be imported
+controller = None
 
 
 class Controller:
@@ -30,17 +24,13 @@ class Controller:
         self.active_profile = None
         self.logger = logging.getLogger('Surf.Controller')
         self.mode = os.environ.get('MODE', 'wet')
-        self.use_pins = os.environ.get('PINS', 'on') == 'on'
+        self.use_pins = os.environ.get('USE_PINS', 'on') == 'on'
 
         self.travel_durations = yaml.safe_load(open(self.modes, 'r'))[self.mode]
         if self.use_pins:
             # ensure that the rasberry pi pins are ready to go
             GPIO.setwarnings(False)
             GPIO.setmode(GPIO.BCM)
-
-        # pick up some constants
-        self.full_extend_duration = constants.full_extend_duration
-        self.full_retract_duration = constants.full_retract_duration
 
         # create the pin attributes
         self.config = yaml.safe_load(open(self.path, 'r'))
@@ -419,7 +409,6 @@ class Surface:
 
         # configure control variables
         self.position = 0
-        self.service_duration = constants.full_extend_duration
 
     def __dict__(self):
         return {'extend': self.extend_pin, 'retract': self.retract_pin}
@@ -483,9 +472,6 @@ class Surface:
         return self.value
 
 
-
-
-
 class Pin:
     """
     Control class for a single Pin.
@@ -532,7 +518,6 @@ class Pin:
             GPIO.output(self.number, False)
 
 
-controller = None
 def start():
     global controller
     controller = Controller()

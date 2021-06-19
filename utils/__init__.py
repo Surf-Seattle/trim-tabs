@@ -5,21 +5,6 @@ import logging.handlers
 from pathlib import Path
 
 
-def create_root_dirs():
-    if not os.path.isdir(HOME_DIR):
-        print(f'creating {HOME_DIR}')
-        os.mkdir(HOME_DIR)
-    if not os.path.isdir(PROFILES_DIR):
-        print(f'creating {PROFILES_DIR}')
-        os.mkdir(PROFILES_DIR)
-    if not os.path.isdir(CONFIG_DIR):
-        print(f'creating {CONFIG_DIR}')
-        os.mkdir(CONFIG_DIR)
-    if not os.path.isdir(LOGS_DIR):
-        print(f'creating {LOGS_DIR}')
-        os.mkdir(LOGS_DIR)
-
-
 def get_log_path() -> str:
     """Filepath of the next log file."""
     return os.path.join(LOGS_DIR, f"{START_TIME.strftime('%Y%m%d_%H%M%S')}.log")
@@ -33,6 +18,9 @@ def create_logger() -> logging.Logger:
 
     # create a formatter
     formatter = logging.Formatter('%(asctime)s %(name)30s %(filename)20s  %(funcName)30s %(lineno)3s %(levelname)8s: %(message)s')
+
+    if not os.path.isfile(LOG_FILE):
+        open(LOG_FILE, 'w')
 
     # create rotating file handler
     file_handler = logging.handlers.RotatingFileHandler(
@@ -85,7 +73,4 @@ UI_KV_DIR = os.path.join(UI_DIR, 'kv')
 UI_PY_DIR = os.path.join(UI_DIR, 'baseclass')
 
 LOG_FILE = get_log_path()
-
-create_root_dirs()
-logger = create_logger()
-log_startup_details()
+logger = create_logger() if os.path.isdir(LOGS_DIR) else None
