@@ -15,7 +15,7 @@ SurfRootScreen:
 
 """
 import utils
-from utils import utilities as u
+from utils import utilities
 from utils import controller
 
 
@@ -27,9 +27,9 @@ class MDSurf(MDApp):
 
     @classmethod
     def load_kv_modules(cls) -> None:
-        logger.info('Loading kivy modules...')
+        utils.logger.info('Loading kivy modules...')
         for kv_file in os.listdir(utils.UI_KV_DIR):
-            logger.debug(f"\t- loading: {os.path.join(utils.UI_KV_DIR, kv_file)}")
+            utils.logger.debug(f"\t- loading: {os.path.join(utils.UI_KV_DIR, kv_file)}")
             with open(os.path.join(utils.UI_KV_DIR, kv_file), encoding="utf-8") as kv:
                 Builder.load_string(kv.read())
 
@@ -41,7 +41,7 @@ class MDSurf(MDApp):
 
 def run() -> None:
 
-    u.first_time_setup_check()
+    utils.utilities.first_time_setup_check()
     utils.log_startup_details()
     controller.start()
     if os.environ.get('FULLSCREEN', "true") == "true":
