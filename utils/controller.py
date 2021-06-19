@@ -22,6 +22,8 @@ class Controller:
 
     def __init__(self):
         self.active_profile = None
+        self.deactivate_required = False
+
         self.logger = logging.getLogger('Surf.Controller')
         self.mode = os.environ.get('MODE', 'wet')
         self.use_pins = os.environ.get('USE_PINS', 'on') == 'on'

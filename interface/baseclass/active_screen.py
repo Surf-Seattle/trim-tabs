@@ -20,6 +20,7 @@ from utils.controller import controller, Surface
 
 class SurfActiveScreen(MDScreen):
     username = StringProperty()
+    deactivating = BooleanProperty()
 
     def __init__(self, *args, **kwargs):
         logger.debug('[UI] Initializing: ActiveScreen')
@@ -41,8 +42,10 @@ class SurfActiveScreen(MDScreen):
     def on_pre_leave(self):
         """Disable Controls, Set values to 'Off'."""
         logger.info('SurfActiveScreen.on_pre_leave.begin')
-        if not controller.active_profile:
+        if self.deactivating:
+            logger.info('SurfActiveScreen.deactivating = True')
             self.ids.control_panel.disable_controls()
+            self.deactivating = False
         logger.info('SurfActiveScreen.on_pre_leave.end')
 
     @property
@@ -77,7 +80,7 @@ class ControlPanel(BoxLayout):
         if self.tab_control_ids:
             for surface_name in controller.surface_names:
                 self.tab_control_ids[surface_name].disable_both()
-                self.tab_control_ids[surface_name].display_value("·")
+                self.tab_control_ids[surface_name].ids.control_surface_value.text = "·"
 
         logger.info('ControlPanel.disable_controls.end')
 
@@ -155,12 +158,12 @@ class TabControl(MDBoxLayout):
         self.ids.increment_control.disabled = False
 
     def disable_both(self) -> None:
-        logger.debug(f'[UI]\t"{self.id}" Controls: Disabling Decrement, Disabling Increment')
+        logger.debug(f'[UI]\t"{self.id}" Controls: Disabling both Decrement and Increment')
         self.ids.increment_control.disabled = True
         self.ids.decrement_control.disabled = True
 
     def enable_both(self) -> None:
-        logger.debug(f'[UI]\t"{self.id}" Controls: Enabling Decrement, Enabling Increment')
+        logger.debug(f'[UI]\t"{self.id}" Controls: Enabling both Decrement and Increment')
         self.ids.increment_control.disabled = False
         self.ids.decrement_control.disabled = False
 
