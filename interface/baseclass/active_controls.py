@@ -12,7 +12,6 @@ from utils import (
 )
 
 from utils.controller import controller
-import time
 
 
 class ActiveBar(ThemableBehavior, MDBoxLayout):

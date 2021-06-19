@@ -27,7 +27,7 @@ class SurfActiveScreen(MDScreen):
         Clock.schedule_once(self.post_init)
 
     def post_init(self, *args, **kwargs):
-        self.deactivate()
+        self.ids.control_panel.disable_controls()
 
     def activate(self, username: str, profile_list_item) -> None:
         """Enable Controls, Set values to those of a given profile."""
