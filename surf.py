@@ -33,7 +33,7 @@ def run(pins: bool, fullscreen: bool) -> None:
     os.environ['FULLSCREEN'] = "true" if fullscreen else "false"
 
     import main
-    main.run(pins, fullscreen)
+    main.run()
 
 
 @main.command(
