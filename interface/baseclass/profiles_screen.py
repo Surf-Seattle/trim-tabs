@@ -29,8 +29,10 @@ class SurfProfilesScreen(MDScreen):
         Clock.schedule_once(self.refresh_visible_profiles)
 
     def on_pre_enter(self):
+        logger.info("SurfProfilesScreen.on_pre_enter.begin")
         if controller.active_profile:
             controller.deactivate_profile()
+        logger.info("SurfProfilesScreen.on_pre_enter.end")
 
     def refresh_visible_profiles(self, *args, **kwargs):
         logger.info('[UI] Refreshing Visible Profiles')
