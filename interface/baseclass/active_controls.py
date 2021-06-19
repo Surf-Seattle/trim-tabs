@@ -52,14 +52,12 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         """The Retract Button in the ActiveBar was pressed."""
         logger.debug('[UI] Retract Clicked, Retracting Tabs...')
         logger.debug('STEP 1')
-        u.get_root_screen(self).screen_manager.get_screen("ACTIVE").deactivate()  # disable active screen controls
-        logger.debug('STEP 2')
         u.get_root_screen(self).navigation_bar.set_current(0)  # shift nav-bar to PROFILES tab
-        logger.debug('STEP 3')
+        logger.debug('STEP 2')
         u.get_root_screen(self).screen_manager.current = "PROFILES"  # shift to the active profiles screen
-        logger.debug('STEP 4')
+        logger.debug('STEP 3')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").list_item.deactivate()  # deactivate the list item
-        logger.debug('STEP 5: hide active-bar')
+        logger.debug('STEP 4: hide active-bar')
         self.hide()  # hide the ActiveBar
         logger.debug('[UI] Retract Complete.')
 
