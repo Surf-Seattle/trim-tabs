@@ -26,9 +26,6 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         """Show the ActiveBar widget when the tabs are retracted."""
         u.hide_widget(self)
 
-    def retracting(self) -> None:
-
-
     def refresh(self) -> None:
         """
         Update the Active Profile Name and Enable or Disable the Goofy and Regular Buttons.
