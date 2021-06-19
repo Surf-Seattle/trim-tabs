@@ -67,6 +67,9 @@ class Controller:
         return u.Profile.read_config(username=profile_name)['control_surfaces']
 
     def activate_profile(self, profile_name: str):
+        if not profile_name:
+            return self.values
+
         self.active_profile = profile_name
         self.move_to(
             new_positions={
