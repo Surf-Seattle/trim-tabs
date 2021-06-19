@@ -61,12 +61,6 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").list_item.deactivate()  # deactivate the list item
         logger.debug('STEP 5: hide active-bar')
         self.hide()  # hide the ActiveBar
-        logger.debug('time.sleep(1)')
-        time.sleep(1)
-        logger.debug('time.sleep(1)')
-        time.sleep(1)
-        logger.debug('STEP 6: deactivate-profile')
-        controller.deactivate_profile()
         logger.debug('[UI] Retract Complete.')
 
 
