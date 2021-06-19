@@ -98,102 +98,26 @@ Options:
 Run the app for the first time:
 
 ```bash
-(surfy) ~/projects/trim-tabs: $ python main.py
+(surfy) ~/projects/trim-tabs: $ python surf.py run
 ```
 
-* You will be prompted to entery values related to configuration needed to run the app.
-* Feel free to test your own values later.
-* For now, answer the prompts as shown for each response so we're all working from a common starting point.
-
-### Configuring Control Surfaces
-
-* The first set of prompts will populate `~/.surf/config/control_surfaces.yml` 
-
-| prompt                                          | response    |
-| ----------------------------------------------- | ----------- |
-| `how many control surfaces will be configured:` | `3`         |
-| `enter the name of control surface 1 of 3:`     | `PORT`      |
-| `enter the name of control surface 2 of 3:`     | `CENTER`    |
-| `enter the name of control surface 3 of 3:`     | `STARBOARD` |
-| `Are you happy with the names as shown?`        | `y`         |
-| `Enter the goofy counterpart of PORT:`          | `STARBOARD` |
-| `Enter the goofy counterpart of CENTER:`        | `CENTER`    |
-| `Enter the goofy counterpart of STARBOARD:`     | `PORT`      |
-| `Are you happy with the mapping as shown?`      | `y`         |
-| `enter PORT extend pin numer:`                  | `13`        |
-| `enter PORT retract pin numer:`                 | `19`        |
-| `enter CENTER extend pin numer:`                | `26`        |
-| `enter CENTER retract pin numer:`               | `16`        |
-| `enter STARBOARD extend pin numer:`             | `20`        |
-| `enter STARBOARD retract pin numer:`            | `21`        |
-| `Are you happy with the mapping as shown?`      | `y`         |
-
-* The next time you run `python main.py` these prompts will not appear.
-* To get these prompts to appear again, run the following:
-
-```bash
-(surfy) ~/projects/trim-tabs: $ rm -rf ~/.surf/config/
-```
-
-### Configuring the Initial Profiles
-
-* The second set of prompts will populate files in `~/.surf/profiles/`:
-* For the following prompts, provide the given responses:
-
-| prompt                                                          | response |
-| --------------------------------------------------------------- | -------- |
-| `enter a name for this profile::`                               | `Steep`  |
-| `enter PORT integer value between 0 and 100 (inclusive)::`      | `0`      |
-| `enter CENTER integer value between 0 and 100 (inclusive)::`    | `30`     |
-| `enter STARBOARD integer value between 0 and 100 (inclusive)::` | `60`     |
-| `Create this profile?:`                                         | `y`      |
-| `Would you like to create another profile?:`                    | `y`      |
-| `enter a name for this profile::`                               | `Mellow` |
-| `enter PORT integer value between 0 and 100 (inclusive)::`      | `0`      |
-| `enter CENTER integer value between 0 and 100 (inclusive)::`    | `15`     |
-| `enter STARBOARD integer value between 0 and 100 (inclusive)::` | `30`     |
-| `Create this profile?:`                                         | `y`      |
-| `Would you like to create another profile?:`                    | `N`      |
-
-* The next time you run `python main.py` these prompts will not appear.
-* To get these prompts to appear again, run the following:
-
-```bash
-(surfy) ~/projects/trim-tabs: $ rm -rf ~/.surf/profiles/
-```
-
-### Configuring Constants
-
-* The third set of prompts will populate `~/.surf/config/constants.yml`:
-* For the following prompts, provide the given responses:
-
-| prompt                                                            | response |
-| ----------------------------------------------------------------- | -------- |
-| `Enter the value of "full_extend_duration" to 2 decimal places:`  | `3.52`   |
-| `Enter the value of "full_retract_duration" to 2 decimal places:` | `4.00`   |
-| `Happy with these values?`                                        | `y`      |
-
-* At this point the app should load and with the configured profiles.
-* The next time you run `python main.py` these prompts will not appear.
-* To get these prompts to appear again, run the following:
-
-```bash
-(surfy) ~/projects/trim-tabs: $ rm -rf ~/.surf/config/constants.yml
-```
-
-> running `rm -rf ~/.surf/` is discouraged because it will
-> delete existing log files which may be useful for debugging.
-
-
-* Simply running `rm -rf ~/.surf/` is discouraged because it will
-  delete existing log files which may be useful for debugging.
-
+This does first-time set-up work if it finds that things needed to run are not present. 
+* creates directory `~/.surf` if not present
+* creates directory `~/.surf/logs` if not present
+* creates directory `~/.surf/profiles` if not present
+* creates directory `~/.surf/config` if not present
+* copies `utils/config_templates/operating_modes.yml` to `~/.surf/config` if not present
+* copies `utils/config_templates/control_surfaces.yml` to `~/.surf/config` if not present
+* if `~/.surf/profiles/` is empty, it is populated with the files in `utils/profile_templates`
 
 # Enabling Raspberry Pi touch screen
-* In the kivy config file:
-    \> nano ~/.kivy/config.ini
-  Add remove the lines under the [input] heading and replace with:
-    mouse = mouse
-    mtdev_%(name)s = probesysfs,provider=mtdev
-    hid_%(name)s = probesysfs,provider=hidinput
-  This allows the touchscreen input to be seen by the trim-tabs interface.
+
+In `~/.kivy/config.ini` file, replace the lines under the `[input]` heading and replace with:
+
+```
+mouse = mouse
+mtdev_%(name)s = probesysfs,provider=mtdev
+hid_%(name)s = probesysfs,provider=hidinput
+```
+
+This allows the touchscreen input to be seen by the trim-tabs interface.
