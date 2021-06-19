@@ -17,18 +17,22 @@ from utils.controller import controller
 
 class ActiveBar(ThemableBehavior, MDBoxLayout):
     profile_name = StringProperty()
-    default_size_hint_y = NumericProperty()
+    default_y_position = NumericProperty()
 
     def show(self):
         """Show the ActiveBar widget when a profile is activated."""
+        if not self.default_y_position:
+            self.default_y_position = self.y
+
         self.refresh()
         self.ids.retract_button.disabled = False
-        u.hide_widget(self, dohide=False)
+        self.y = self.default_y_position
+        # u.hide_widget(self, dohide=False)
 
     def hide(self):
         """Show the ActiveBar widget when the tabs are retracted."""
-        self.default_size_hint_y = self.size_hint_y
-        u.hide_widget(self)
+        self.y = 5000
+        # u.hide_widget(self)
 
     def refresh(self) -> None:
         """
