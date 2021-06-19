@@ -23,14 +23,12 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         """Show the ActiveBar widget when a profile is activated."""
         self.refresh()
         self.ids.retract_button.disabled = False
-        self.size_hint_y = self.default_size_hint_y
-        # u.hide_widget(self, dohide=False)
+        u.hide_widget(self, dohide=False)
 
     def hide(self):
         """Show the ActiveBar widget when the tabs are retracted."""
         self.default_size_hint_y = self.size_hint_y
-        self.size_hint_y = 0
-        # u.hide_widget(self)
+        u.hide_widget(self)
 
     def refresh(self) -> None:
         """
@@ -58,12 +56,7 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         """The Retract Button in the ActiveBar was pressed."""
         logger.debug('[UI] Retract Clicked, Retracting Tabs...')
         logger.debug('STEP -1: call ActiveBar.retracting')
-        self.profile_name = "Retracting..."
-        self.ids.retract_button.disabled = True
-        self.ids.goofy_button.disabled = True
-        self.ids.goofy_button.disabled = True
-        self.md_bg_color = [1, .33, .69, 1]
-        return
+        self.profile_name = "wait..."
         logger.debug('STEP 0: setting active screen `deactivating` to True')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").deactivating = True
         logger.debug('STEP 1')
@@ -72,8 +65,6 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         u.get_root_screen(self).screen_manager.current = "PROFILES"  # shift to the active profiles screen
         logger.debug('STEP 3')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").list_item.deactivate()  # deactivate the list item
-        # logger.debug('STEP 4: hide active-bar')
-        # self.hide()  # hide the ActiveBar
         logger.debug('[UI] Retract Complete.')
 
 
