@@ -32,7 +32,6 @@ class SurfActiveScreen(MDScreen):
     def activate(self, username: str, profile_list_item) -> None:
         """Enable Controls, Set values to those of a given profile."""
         # username
-        self.username = username
         self.list_item = profile_list_item
 
         # update the Control Panel
