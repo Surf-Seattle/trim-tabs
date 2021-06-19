@@ -41,9 +41,13 @@ class SurfActiveScreen(MDScreen):
 
     def deactivate(self) -> None:
         """Disable Controls, Set values to 'Off'."""
-        self.username = ''
-        # update the Control Panel
+        logger.info('SurfActiveScreen.deactivate.begin')
         self.ids.control_panel.disable_controls()
+        logger.info('SurfActiveScreen.deactivate.end')
+
+    @property
+    def username(self) -> None:
+        return controller.active_profile
 
 
 class ControlPanel(BoxLayout):
@@ -69,10 +73,11 @@ class ControlPanel(BoxLayout):
 
     def disable_controls(self) -> None:
         """Disable the ActiveScreen controls."""
+        logger.info('ControlPanel.disable_controls.begin')
         if self.tab_control_ids:
             for surface_name in controller.surface_names:
                 self.tab_control_ids[surface_name].disable_both()
-            controller.deactivate_profile()
+        logger.info('ControlPanel.disable_controls.end')
 
     def enable_controls(self, username: str) -> None:
         """Enable the ActiveScreen controls with values from a WaveProfile yaml file."""

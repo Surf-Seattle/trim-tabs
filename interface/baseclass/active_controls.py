@@ -55,6 +55,7 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         u.get_root_screen(self).screen_manager.current = "PROFILES"  # shift to the active profiles screen
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").list_item.deactivate()  # deactivate the list item
         self.hide()  # hide the ActiveBar
+        controller.deactivate_profile()
 
 
 
