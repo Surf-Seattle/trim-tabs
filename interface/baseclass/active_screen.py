@@ -46,6 +46,7 @@ class SurfActiveScreen(MDScreen):
             logger.info('SurfActiveScreen.activating = True')
             u.get_root_screen(self).active_bar.refresh()
             controller.activate_profile(controller.active_profile)
+            u.get_root_screen(self).active_bar.refresh()
 
             self.activating = False
         logger.info('SurfActiveScreen.on_pre_enter.end')
