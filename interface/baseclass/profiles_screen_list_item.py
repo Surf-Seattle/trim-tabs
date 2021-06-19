@@ -61,9 +61,10 @@ class SurfListItem(ThemableBehavior, ButtonBehavior, MDBoxLayout):
         self.activate_clicked = True
 
     def activate(self) -> None:
+        u.get_screen(self, "ACTIVE").activate(self.username, self)
+        u.get_root_screen(self).active_bar.show()
         u.get_root_screen(self).navigation_bar.set_current(1)
         u.get_root_screen(self).screen_manager.current = "ACTIVE"
-        u.get_screen(self, "ACTIVE").activate(self.username, self)
         u.get_screen(self, "PROFILES").set_all_list_item_buttons('START')
         self.ids.activate_button.text = 'STOP'
 

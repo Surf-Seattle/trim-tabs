@@ -21,6 +21,7 @@ from utils.controller import controller, Surface
 class SurfActiveScreen(MDScreen):
     username = StringProperty()
     deactivating = BooleanProperty()
+    activating = BooleanProperty()
 
     def __init__(self, *args, **kwargs):
         logger.debug('[UI] Initializing: ActiveScreen')
@@ -33,11 +34,18 @@ class SurfActiveScreen(MDScreen):
     def activate(self, username: str, profile_list_item) -> None:
         """Enable Controls, Set values to those of a given profile."""
         # username
+        self.activating = True
         self.list_item = profile_list_item
 
         # update the Control Panel
         self.ids.control_panel.enable_controls(username)
-        u.get_root_screen(self).active_bar.show()
+
+    def on_pre_enter(self):
+        logger.info('SurfActiveScreen.on_pre_enter.begin')
+        if self.activating:
+            logger.info('SurfActiveScreen.activating = True')
+            self.activating = False
+        logger.info('SurfActiveScreen.on_pre_enter.end')
 
     def on_pre_leave(self):
         """Disable Controls, Set values to 'Off'."""
