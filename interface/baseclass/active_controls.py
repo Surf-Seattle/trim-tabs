@@ -20,11 +20,14 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
     def show(self):
         """Show the ActiveBar widget when a profile is activated."""
         self.refresh()
-        u.hide_widget(self, dohide=False)
+        self.ids.retract_button.disabled = False
+        self.size_hint_y = 1
+        # u.hide_widget(self, dohide=False)
 
     def hide(self):
         """Show the ActiveBar widget when the tabs are retracted."""
-        u.hide_widget(self)
+        self.size_hint_y = 0
+        # u.hide_widget(self)
 
     def refresh(self) -> None:
         """
