@@ -76,7 +76,7 @@ class ControlPanel(BoxLayout):
         if self.tab_control_ids:
             for surface_name in controller.surface_names:
                 self.tab_control_ids[surface_name].disable_both()
-                self.tab_control_ids[surface_name].display_value("*")
+                self.tab_control_ids[surface_name].display_value("·")
 
         logger.info('ControlPanel.disable_controls.end')
 
