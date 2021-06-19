@@ -4,6 +4,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import (
     BooleanProperty,
     StringProperty,
+    NumericProperty
 )
 
 from utils import (
@@ -16,16 +17,18 @@ from utils.controller import controller
 
 class ActiveBar(ThemableBehavior, MDBoxLayout):
     profile_name = StringProperty()
+    default_size_hint_y = NumericProperty()
 
     def show(self):
         """Show the ActiveBar widget when a profile is activated."""
         self.refresh()
         self.ids.retract_button.disabled = False
-        self.size_hint_y = 1
+        self.size_hint_y = self.default_size_hint_y
         # u.hide_widget(self, dohide=False)
 
     def hide(self):
         """Show the ActiveBar widget when the tabs are retracted."""
+        self.default_size_hint_y = self.size_hint_y
         self.size_hint_y = 0
         # u.hide_widget(self)
 
