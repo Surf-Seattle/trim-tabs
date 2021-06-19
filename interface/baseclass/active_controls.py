@@ -26,13 +26,11 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
 
         self.refresh()
         self.ids.retract_button.disabled = False
-        self.y = self.default_y_position
-        # u.hide_widget(self, dohide=False)
+        u.hide_widget(self, dohide=False)
 
     def hide(self):
         """Show the ActiveBar widget when the tabs are retracted."""
-        self.y = 5000
-        # u.hide_widget(self)
+        u.hide_widget(self)
 
     def refresh(self) -> None:
         """
@@ -59,22 +57,20 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
     def retract(self):
         """The Retract Button in the ActiveBar was pressed."""
         logger.debug('[UI] Retract Clicked, Retracting Tabs...')
-        logger.debug('STEP -1: updating the satusbar')
         self.profile_name = "wait..."
         self.ids.goofy_button.disabled = True
         self.ids.regular_button.disabled = True
         self.ids.retract_button.disabled = True
-        self.ids.goofy_button.md_bg_color = self.ids.goofy_button.md_bg_color[:3] + [0]
+        # TODO: would love to change the color of the active bar during retracting
+        # TODO: would love the buttons to be invisible during this period
+        #       i tried but could figure it out
 
-        logger.debug('STEP 0: setting active screen `deactivating` to True')
+        # by setting this `deactivating` it will trigger behavior on the `on_enter` of the active screen
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").deactivating = True
-        logger.debug('STEP 1')
+
         u.get_root_screen(self).navigation_bar.set_current(0)  # shift nav-bar to PROFILES tab
-        logger.debug('STEP 2')
         u.get_root_screen(self).screen_manager.current = "PROFILES"  # shift to the active profiles screen
-        logger.debug('STEP 3')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").list_item.deactivate()  # deactivate the list item
-        logger.debug('[UI] Retract Complete.')
 
 
 
