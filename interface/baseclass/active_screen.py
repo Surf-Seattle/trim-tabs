@@ -71,8 +71,7 @@ class ControlPanel(BoxLayout):
         """Disable the ActiveScreen controls."""
         if self.tab_control_ids:
             for surface_name in controller.surface_names:
-                self.tab_control_ids[surface_name].disable_increment()
-                self.tab_control_ids[surface_name].disable_decrement()
+                self.tab_control_ids[surface_name].disable_both()
             controller.deactivate_profile()
 
     def enable_controls(self, username: str) -> None:
