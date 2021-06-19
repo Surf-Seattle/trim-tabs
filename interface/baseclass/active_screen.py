@@ -73,7 +73,7 @@ class ControlPanel(BoxLayout):
             for surface_name in controller.surface_names:
                 self.tab_control_ids[surface_name].disable_increment()
                 self.tab_control_ids[surface_name].disable_decrement()
-            self.controller.deactivate_profile()
+            controller.deactivate_profile()
 
     def enable_controls(self, username: str) -> None:
         """Enable the ActiveScreen controls with values from a WaveProfile yaml file."""
