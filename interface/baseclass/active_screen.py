@@ -43,6 +43,7 @@ class SurfActiveScreen(MDScreen):
     def on_pre_enter(self):
         logger.info('SurfActiveScreen.on_pre_enter.begin')
         if self.activating:
+            u.get_root_screen(self).active_bar.refresh()
             logger.info('SurfActiveScreen.activating = True')
             self.activating = False
         logger.info('SurfActiveScreen.on_pre_enter.end')
