@@ -55,8 +55,13 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
     def retract(self):
         """The Retract Button in the ActiveBar was pressed."""
         logger.debug('[UI] Retract Clicked, Retracting Tabs...')
-        logger.debug('STEP -1: call ActiveBar.retracting')
+        logger.debug('STEP -1: updating the satusbar')
         self.profile_name = "wait..."
+        self.ids.goofy_button.disabled = True
+        self.ids.regular_button.disabled = True
+        self.ids.retract_button.disabled = True
+        self.logger.info(self.__dict__)
+
         logger.debug('STEP 0: setting active screen `deactivating` to True')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").deactivating = True
         logger.debug('STEP 1')
