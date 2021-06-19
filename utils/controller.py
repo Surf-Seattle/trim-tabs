@@ -34,6 +34,7 @@ class Controller:
 
         # create the pin attributes
         self.config = yaml.safe_load(open(self.path, 'r'))
+        self.surface_names = [configured_surface['name'] for configured_surface in self.config]
         for configured_surface in self.config:
             setattr(
                 self,
