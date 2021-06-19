@@ -26,11 +26,19 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         """Show the ActiveBar widget when the tabs are retracted."""
         u.hide_widget(self)
 
+    def retracting(self) -> None:
+        self.profile_name = "Retracting..."
+        self.ids.retract_button.disabled = True
+        self.ids.goofy_button.disabled = True
+        self.ids.goofy_button.disabled = True
+        self.md_bg_color = "#ffaa4f"
+
     def refresh(self) -> None:
         """
         Update the Active Profile Name and Enable or Disable the Goofy and Regular Buttons.
         Attributes of the ACTIVE screen control_panel are used to refresh the ActiveBar
         """
+        self.md_bg_color = "#ffd54f"
         self.profile_name = controller.active_profile
         if controller.values['PORT'] > controller.values['STARBOARD']:
             self.ids.regular_button.disabled = True
@@ -50,7 +58,8 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
     def retract(self):
         """The Retract Button in the ActiveBar was pressed."""
         logger.debug('[UI] Retract Clicked, Retracting Tabs...')
-
+        logger.debug('STEP -1: call ActiveBar.retracting')
+        self.retracting()
         logger.debug('STEP 0: setting active screen `deactivating` to True')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").deactivating = True
         logger.debug('STEP 1')
@@ -59,8 +68,8 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         u.get_root_screen(self).screen_manager.current = "PROFILES"  # shift to the active profiles screen
         logger.debug('STEP 3')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").list_item.deactivate()  # deactivate the list item
-        logger.debug('STEP 4: hide active-bar')
-        self.hide()  # hide the ActiveBar
+        # logger.debug('STEP 4: hide active-bar')
+        # self.hide()  # hide the ActiveBar
         logger.debug('[UI] Retract Complete.')
 
 

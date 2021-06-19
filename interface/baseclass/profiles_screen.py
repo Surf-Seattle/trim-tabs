@@ -32,6 +32,7 @@ class SurfProfilesScreen(MDScreen):
         logger.info("SurfProfilesScreen.on_pre_enter.begin")
         if controller.active_profile:
             controller.deactivate_profile()
+            u.get_root_screen(self).active_bar.hide()
         logger.info("SurfProfilesScreen.on_pre_enter.end")
 
     def refresh_visible_profiles(self, *args, **kwargs):
