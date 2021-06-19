@@ -27,11 +27,7 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         u.hide_widget(self)
 
     def retracting(self) -> None:
-        self.profile_name = "Retracting..."
-        self.ids.retract_button.disabled = True
-        self.ids.goofy_button.disabled = True
-        self.ids.goofy_button.disabled = True
-        self.md_bg_color = "#ffaa4f"
+
 
     def refresh(self) -> None:
         """
@@ -59,7 +55,12 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         """The Retract Button in the ActiveBar was pressed."""
         logger.debug('[UI] Retract Clicked, Retracting Tabs...')
         logger.debug('STEP -1: call ActiveBar.retracting')
-        self.retracting()
+        self.profile_name = "Retracting..."
+        self.ids.retract_button.disabled = True
+        self.ids.goofy_button.disabled = True
+        self.ids.goofy_button.disabled = True
+        self.md_bg_color = "#ffaa4f"
+        return
         logger.debug('STEP 0: setting active screen `deactivating` to True')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").deactivating = True
         logger.debug('STEP 1')
