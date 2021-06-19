@@ -56,6 +56,9 @@ def log_startup_details() -> None:
     logger.debug(f'UI_PY_DIR:\t{UI_PY_DIR}')
     logger.info('-'*len(f'logging to: {LOG_FILE}'))
     logger.info('')
+    logger.info('')
+    logger.info('Running MDSurf.')
+    logger.info('')
 
 
 START_TIME = datetime.datetime.now()

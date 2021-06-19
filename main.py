@@ -14,8 +14,9 @@ SurfRootScreen:
     
 
 """
-logger = None
-UI_KV_DIR = None
+import utils
+from utils import utilities as u
+from utils import controller
 
 
 class MDSurf(MDApp):
@@ -27,9 +28,9 @@ class MDSurf(MDApp):
     @classmethod
     def load_kv_modules(cls) -> None:
         logger.info('Loading kivy modules...')
-        for kv_file in os.listdir(UI_KV_DIR):
-            logger.debug(f"\t- loading: {os.path.join(UI_KV_DIR, kv_file)}")
-            with open(os.path.join(UI_KV_DIR, kv_file), encoding="utf-8") as kv:
+        for kv_file in os.listdir(utils.UI_KV_DIR):
+            logger.debug(f"\t- loading: {os.path.join(utils.UI_KV_DIR, kv_file)}")
+            with open(os.path.join(utils.UI_KV_DIR, kv_file), encoding="utf-8") as kv:
                 Builder.load_string(kv.read())
 
     def build(self):
@@ -38,25 +39,12 @@ class MDSurf(MDApp):
         return Builder.load_string(KV)
 
 
-def run(pins: bool, fullscreen: bool) -> None:
-    global logger
-    global UI_KV_DIR
-
-    import utils
-    from utils import UI_KV_DIR
-    from utils import utilities as u
-    from utils import logger
-    from utils import controller
-
-    utils.log_startup_details()
-
-    logger.info('')
-    logger.info('Running MDSurf.')
-    logger.info('')
+def run() -> None:
 
     u.first_time_setup_check()
+    utils.log_startup_details()
     controller.start()
-    if fullscreen:
+    if os.environ.get('FULLSCREEN', "true") == "true":
         Config.set('graphics', 'window_state', 'maximized')
         Config.set('graphics', 'fullscreen', 'auto')
         Config.write()
