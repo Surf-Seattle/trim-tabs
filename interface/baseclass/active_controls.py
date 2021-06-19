@@ -31,7 +31,7 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         Update the Active Profile Name and Enable or Disable the Goofy and Regular Buttons.
         Attributes of the ACTIVE screen control_panel are used to refresh the ActiveBar
         """
-        self.md_bg_color = "#ffd54f"
+        # self.md_bg_color = "#ffd54f"
         self.profile_name = controller.active_profile
         if controller.values['PORT'] > controller.values['STARBOARD']:
             self.ids.regular_button.disabled = True
