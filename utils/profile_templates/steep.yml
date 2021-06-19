@@ -2,5 +2,5 @@ name: Steep
 username: steep
 control_surfaces:
   PORT: 10
-  CENTER: 23
-  STARBOARD: 30
+  CENTER: 20
+  STARBOARD: 40

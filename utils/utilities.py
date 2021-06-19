@@ -187,6 +187,9 @@ def update_wave_profile(profile_name: str, values: list) -> None:
                f"{control_surface_names}, but only {len(values)} values were provided. Provide " \
                f"{len(control_surface_names)} values ordered the same as the control surface names shown."
 
+    if not all([value % 5 == 0 for value in values]):
+        return f"Each value needs to be divisible by 5, not all of these values are: {values}"
+
     if not os.path.isfile(path):
         return f"{path} does not exist."
     else:
@@ -237,6 +240,9 @@ def create_new_wave_profile(profile_name: str, values: list) -> None:
         return f"Wrong number of values provided. There are {len(control_surface_names)} control-surfaces, " \
                f"{control_surface_names}, but only {len(values)} values were provided. Provide " \
                f"{len(control_surface_names)} values ordered the same as the control surface names shown."
+
+    if not all([value % 5 == 0 for values in values]):
+        return f"Each value needs to be divisible by 5, not all of these values are: {values}"
 
     new_profile_surface_values = dict(zip(control_surface_names, values))
     if os.path.isfile(path):
