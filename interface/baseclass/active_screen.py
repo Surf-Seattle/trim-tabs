@@ -38,11 +38,12 @@ class SurfActiveScreen(MDScreen):
         self.ids.control_panel.enable_controls(username)
         u.get_root_screen(self).active_bar.show()
 
-    def deactivate(self) -> None:
+    def on_pre_leave(self):
         """Disable Controls, Set values to 'Off'."""
-        logger.info('SurfActiveScreen.deactivate.begin')
-        self.ids.control_panel.disable_controls()
-        logger.info('SurfActiveScreen.deactivate.end')
+        logger.info('SurfActiveScreen.on_pre_leave.begin')
+        if not controller.active_profile:
+            self.ids.control_panel.disable_controls()
+        logger.info('SurfActiveScreen.on_pre_leave.end')
 
     @property
     def username(self) -> None:
