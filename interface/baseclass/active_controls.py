@@ -38,6 +38,7 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         """
         # self.md_bg_color = "#ffd54f"
         self.profile_name = controller.active_profile
+        logger.info(controller.values)
         if controller.values['PORT'] > controller.values['STARBOARD']:
             self.ids.regular_button.disabled = True
             self.ids.goofy_button.disabled = False
