@@ -60,7 +60,7 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         self.ids.goofy_button.disabled = True
         self.ids.regular_button.disabled = True
         self.ids.retract_button.disabled = True
-        logger.info(self.ids.retract_button.canvas.__dict__)
+        self.ids.goofy_button.md_bg_color = self.ids.goofy_button.md_bg_color[:3] + [0]
 
         logger.debug('STEP 0: setting active screen `deactivating` to True')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").deactivating = True
