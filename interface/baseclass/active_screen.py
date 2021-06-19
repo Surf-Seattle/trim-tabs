@@ -126,12 +126,12 @@ class TabControl(MDBoxLayout):
     def increment(self, *args) -> None:
         logger.info("----- Increment Pressed -----")
         self.value = controller.surfaces[self.id].increment()
-        print(controller.values.get(self.id, -1))
+        u.get_root_screen(self).active_bar.refresh()
 
     def decrement(self, *args) -> None:
         logger.info("----- Decrement Pressed -----")
         self.value = controller.surfaces[self.id].decrement()
-        print(controller.values.get(self.id, -1))
+        u.get_root_screen(self).active_bar.refresh()
 
     @property
     def value(self):
