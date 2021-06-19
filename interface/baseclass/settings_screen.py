@@ -5,6 +5,7 @@ from kivymd.uix.list import OneLineListItem
 from kivymd.uix.screen import MDScreen
 
 from utils import logger
+from utils.controller import controller
 
 
 class SurfSettingsScreen(MDScreen):
@@ -32,4 +33,5 @@ class SurfSettingsScreen(MDScreen):
 
     def shut_down(self, *args):
         logger.info('UI: Shutting Down')
+        controller.deactivate_profile()
         MDApp.get_running_app().stop()

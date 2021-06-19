@@ -1,22 +1,9 @@
 import os
-import yaml
-import kivymd
 
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivy.config import Config
 from kivy.core.window import Window
-
-from utils import (
-    logger,
-    UI_KV_DIR,
-    utilities as u
-)
-
-#Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
-#Config.set('graphics', 'width', '500')
-#Config.set('graphics', 'height', '500')
-
 
 KV = """
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
@@ -27,6 +14,9 @@ SurfRootScreen:
     
 
 """
+import utils
+from utils import utilities
+from utils import controller
 
 
 class MDSurf(MDApp):
@@ -37,30 +27,32 @@ class MDSurf(MDApp):
 
     @classmethod
     def load_kv_modules(cls) -> None:
-        logger.info('Loading kivy modules...')
-        for kv_file in os.listdir(UI_KV_DIR):
-            logger.debug(f"\t- loading: {os.path.join(UI_KV_DIR, kv_file)}")
-            with open(os.path.join(UI_KV_DIR, kv_file), encoding="utf-8") as kv:
+        utils.logger.info('Loading kivy modules...')
+        for kv_file in os.listdir(utils.UI_KV_DIR):
+            utils.logger.debug(f"\t- loading: {os.path.join(utils.UI_KV_DIR, kv_file)}")
+            with open(os.path.join(utils.UI_KV_DIR, kv_file), encoding="utf-8") as kv:
                 Builder.load_string(kv.read())
 
     def build(self):
         self.theme_cls.primary_palette = "Green"
         self.theme_cls.theme_style = "Dark"
-        #Window.size
-        #Window.size = (800, 480)
-        #Config.set('graphics', 'resizable', '0') #0 being off 1 being on as in true/false
-        #Config.set('graphics', 'fullscreen', 'auto')
-        #Config.write()
         return Builder.load_string(KV)
 
 
-if __name__ == '__main__':
+def run() -> None:
 
-    logger.info('')
-    logger.info('Running MDSurf.')
-    logger.info('')
-    u.first_time_setup_check()
-    Config.set('graphics', 'fullscreen', 'auto')
-    Config.set('graphics', 'window_state', 'maximized')
-    Config.write()
+    utils.utilities.first_time_setup_check()
+    utils.log_startup_details()
+    controller.start()
+    if os.environ.get('FULLSCREEN', "true") == "true":
+        Config.set('graphics', 'window_state', 'maximized')
+        Config.set('graphics', 'fullscreen', 'auto')
+        Config.write()
+    else:
+        Config.set('graphics', 'resizable', '0')
+        Config.set('graphics', 'width', '800')
+        Config.set('graphics', 'height', '500')
+        Config.set('graphics', 'fullscreen', 'false')
+        Window.show_cursor = True
+        Config.write()
     MDSurf().run()

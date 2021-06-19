@@ -1,0 +1,26 @@
+# <mode>:
+#   <x>:
+#     extend: <duration in seconds to fully extend x pins in this mode>
+#     retract: <duration in seconds to fully retract x pins in this mode>
+
+wet:
+  1:
+    deploy: 3.52
+    withdraw: 4.00
+  2:
+    deploy: 4.21
+    withdraw: 5.00
+  3:
+    deploy: 5.87
+    withdraw: 6.50
+
+dry:
+  1:
+    deploy: 3.52
+    withdraw: 4.00
+  2:
+    deploy: 5.10
+    withdraw: 6.00
+  3:
+    deploy: 7.10
+    withdraw: 8.00

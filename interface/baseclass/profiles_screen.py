@@ -10,8 +10,9 @@ from kivymd.uix.screen import MDScreen
 
 from utils import (
     logger,
-    utilities as u
+    utilities as u,
 )
+from utils.controller import controller
 
 from interface.baseclass.profiles_screen_list_item import SurfListItem
 
@@ -26,6 +27,13 @@ class SurfProfilesScreen(MDScreen):
         logger.debug('[UI] Initializing: ProfilesScreen')
         MDScreen.__init__(self, *args, **kwargs)
         Clock.schedule_once(self.refresh_visible_profiles)
+
+    def on_enter(self):
+        logger.info("SurfProfilesScreen.on_pre_enter.begin")
+        if controller.active_profile:
+            controller.deactivate_profile()
+            u.get_root_screen(self).active_bar.hide()
+        logger.info("SurfProfilesScreen.on_pre_enter.end")
 
     def refresh_visible_profiles(self, *args, **kwargs):
         logger.info('[UI] Refreshing Visible Profiles')

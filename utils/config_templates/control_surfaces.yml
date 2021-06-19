@@ -1,0 +1,15 @@
+- name: PORT
+  goofy: STARBOARD
+  pins:
+    extend: 13
+    retract: 19
+- name: CENTER
+  goofy: CENTER
+  pins:
+    extend: 26
+    retract: 16
+- name: STARBOARD
+  goofy: PORT
+  pins:
+    extend: 20
+    retract: 21
