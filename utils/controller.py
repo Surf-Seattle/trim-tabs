@@ -63,6 +63,9 @@ class Controller:
                 )
         self.logger.info("")
 
+    def get_profile_surface_values(self, profile_name):
+        return u.Profile.read_config(username=profile_name)['control_surfaces']
+
     def activate_profile(self, profile_name: str):
         self.active_profile = profile_name
         self.move_to(
