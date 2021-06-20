@@ -43,8 +43,8 @@
             height: goofy_button.height + 20
             MDFillRoundFlatIconButton:
                 id: goofy_button
-                text: "Goofy"
-                icon: "ray-start-arrow"
+                text: "Invert"
+#                icon: "ray-start-arrow"
                 pos_hint: {"center_x": .5}
                 padding: [0, 20, 0, 20]
                 on_release: root.invert()
@@ -58,11 +58,11 @@
             height: regular_button.height + 20
             MDFillRoundFlatIconButton:
                 id: regular_button
-                text: "Regular"
-                icon: "ray-end-arrow"
+                text: "Save"
+                icon: "save"
                 pos_hint: {"center_x": .5}
                 padding: [0, 20, 0, 20]
-                on_release: root.invert()
+                on_release: root.save_profile()
                 # colors
                 md_bg_color: gch("#DCDBDB")
                 theme_text_color: "Custom"

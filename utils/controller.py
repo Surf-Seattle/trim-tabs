@@ -7,7 +7,7 @@ from typing import List, Set
 if os.environ.get('USE_PINS', 'true') == 'true':
     import RPi.GPIO as GPIO
 
-from utils import CONFIG_DIR
+from utils import CONFIG_DIR, PROFILES_DIR
 from utils import utilities as u
 
 # module level variable populated when `start()` is called
@@ -79,6 +79,26 @@ class Controller:
             }
         )
         return self.values
+
+    def update_profile(self):
+        if not self.active_profile:
+            return
+
+        config_path = os.path.join(PROFILES_DIR, f"{self.active_profile}.yml")
+        current_config = yaml.safe_load(open(config_path, 'r'))
+        open(config_path, 'w').write(
+            yaml.dump(
+                {
+                    'name': current_config['name'],
+                    'username': current_config['username'],
+                    'control_surfaces': self.values
+                },
+                default_flow_style=False,
+                sort_keys=False
+            )
+        )
+
+
 
     def deactivate_profile(self) -> dict:
         self.active_profile = None

@@ -50,8 +50,13 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
             self.ids.goofy_button.disabled = True
 
     def invert(self) -> None:
-        """The Goofy or Regular Button in the ActiveBar was pressed."""
+        """The Invert Button in the ActiveBar was pressed."""
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").ids.control_panel.invert()
+        self.refresh()
+
+    def update_profile(self) -> None:
+        """The Save Button in the ActiveBar was pressed"""
+        u.get_root_screen(self).screen_manager.get_screen("ACTIVE").ids.control_panel.update_profile()
         self.refresh()
 
     def retract(self):
