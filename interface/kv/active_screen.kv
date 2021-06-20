@@ -47,6 +47,9 @@
             on_release: root.decrement(self)
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
             disabled: True
+            md_bg_color: gch("#9C0000")
+            theme_text_color: "Custom"
+            text_color: gch("#DCDBDB")
 
         # Control Surface Name
         MyMDLabel:
@@ -55,6 +58,9 @@
             text: " "
             halign: "center"
             valign: "top"
+            theme_text_color: "Custom"
+            text_color: gch("#DCDBDB")
+
 
         # Control Surface Name
         MyMDLabel:
@@ -63,6 +69,9 @@
             text: root.id
             halign: "center"
             valign: "top"
+            theme_text_color: "Custom"
+            text_color: gch("#DCDBDB")
+
 
 <ControlPanel>
     # This is the structure which will hold about 2 or 3 UpDownControl
