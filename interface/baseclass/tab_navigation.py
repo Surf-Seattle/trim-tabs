@@ -17,7 +17,7 @@ from kivymd.theming import ThemableBehavior
 
 class NavigationItem(ThemableBehavior, ButtonBehavior, BoxLayout):
     duration = NumericProperty(0.3)
-    button_width = NumericProperty(dp(120))
+    button_width = NumericProperty(dp(200))
     button_height = NumericProperty(dp(40))
     text = StringProperty()
     icon = StringProperty()
@@ -57,7 +57,7 @@ class NavigationItem(ThemableBehavior, ButtonBehavior, BoxLayout):
         label_anim.start(self.ids._label)
 
         but_anim = Animation(
-            width=self.height,
+            width=self.width,
             t="linear",
             duration=self.duration,
             icon_color=self.theme_cls.disabled_hint_text_color,
@@ -76,7 +76,7 @@ class NavigationBar(ThemableBehavior, BoxLayout):
         self.width = Window.width
         buttons = self.ids._button_box.children
         button_sizes = (
-                               (len(buttons) - 1) * buttons[0].button_height
+                               (len(buttons) - 1) * buttons[0].button_width
                        ) + buttons[0].button_width
         space = self.width - button_sizes
         spacing = space / (len(buttons) + 1)
