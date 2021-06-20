@@ -61,19 +61,19 @@ class SurfListItem(ThemableBehavior, ButtonBehavior, MDBoxLayout):
         # Reset Indicators
         self.activate_clicked = False
 
-    def activate_handler(self) -> None:
-        logger.info(f'[UI] Activate Profile: "{self.name}"')
-        self.activate_clicked = True
 
     def activate(self) -> None:
         logger.info('SurfListItem.activate.begin')
-        controller.active_profile = self.username
-        u.get_root_screen(self).active_bar.show()
-        u.get_root_screen(self).navigation_bar.set_current(1)
-        u.get_root_screen(self).screen_manager.current = "ACTIVE"
-        u.get_screen(self, "ACTIVE").activate(self.username, self)
-        u.get_screen(self, "PROFILES").set_all_list_item_buttons('START')
-        self.ids.activate_button.text = 'STOP'
+        if controller.active_profile:
+            logger.info("NOPE! There is already an active profile!")
+        else:
+            controller.active_profile = self.username
+            u.get_root_screen(self).active_bar.show()
+            u.get_root_screen(self).navigation_bar.set_current(1)
+            u.get_root_screen(self).screen_manager.current = "ACTIVE"
+            u.get_screen(self, "ACTIVE").activate(self.username, self)
+            u.get_screen(self, "PROFILES").set_all_list_item_buttons('START')
+            self.ids.activate_button.text = 'STOP'
         logger.info('SurfListItem.activate.end')
 
     def deactivate(self) -> None:
