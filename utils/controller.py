@@ -428,10 +428,11 @@ class Surface:
         self.retract_pin = Pin(self, 'retract', retract_pin_number)
         self.pins = [self.extend_pin, self.retract_pin]
 
+        # this is how increment/decrement can use custom timings rather than the full out/back durations
         op_modes = yaml.safe_load(open(os.path.join(CONFIG_DIR, 'operating_modes.yml'), 'r'))[self.controller.mode]
-
         self.increment_extend_duration = op_modes['incremental'][self.name]['extend']
         self.increment_retract_duration = op_modes['incremental'][self.name]['retract']
+
         # configure control variables
         self.position = 0
 
