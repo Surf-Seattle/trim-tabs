@@ -22,11 +22,12 @@
             icon: "plus"
             opposite_colors: True
             elevation: 8
-            md_bg_color: 1, 0, 0, 1
-            md_bg_color: gch("#ffd54f")
             on_release: root.increment(self)
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
-            disabled: True
+            disabled: True]
+            md_bg_color: gch("#9C0000")
+            theme_text_color: "Custom"
+            text_color: gch("#DCDBDB")
 
         # Control Surface Value
         MyMDLabel:
