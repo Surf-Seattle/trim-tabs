@@ -96,7 +96,7 @@ class SurfListItem(ThemableBehavior, ButtonBehavior, MDBoxLayout):
                 buttons=[
                     MDFlatButton(
                         text="CANCEL",
-                        on_release=self.close_dialogue()
+                        on_release=self.close_dialogue
                     ),
                     MDFlatButton(
                         text="DELETE",
@@ -111,7 +111,7 @@ class SurfListItem(ThemableBehavior, ButtonBehavior, MDBoxLayout):
         return self._dialogue
 
     def show_dialogue(self, *args):
-        logger.debug(f'[UI] "{self.name}" Edit-Dialogue: Showing')
+        logger.warning(f'[UI] "{self.name}" Edit-Dialogue: Showing')
         self.dialogue.open()
 
     def close_dialogue(self, *args):
