@@ -112,6 +112,8 @@ class SurfListItem(ThemableBehavior, ButtonBehavior, MDBoxLayout):
 
     def show_dialogue(self, *args):
         logger.warning(f'[UI] "{self.name}" Edit-Dialogue: Showing')
+        logger.warning(args)
+
         self.dialogue.open()
 
     def close_dialogue(self, *args):
