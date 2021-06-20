@@ -27,8 +27,7 @@
 
         SurfLabel:  # PROFILE NAME
             text: root.name
-#            theme_text_color: "Primary"
-#            theme_text_color: "Custom"
+            theme_text_color: "Custom"
             text_color: gch("#9C0000")
             font_style: "H4"
 
@@ -43,10 +42,11 @@
         SurfLabel:
             id: PORT
             text: str(int(root.port_value))
-            theme_text_color: "Secondary"
             pos_hint: {"center_x": .5, "center_y": .5}
             halign: "right"
             font_style: "H4"
+            theme_text_color: "Custom"
+            text_color: gch("#9C0000")
 
         SurfLabel:
             id: CENTER
@@ -60,10 +60,11 @@
         SurfLabel:
             id: STARBOARD
             text: str(int(root.starboard_value))
-            theme_text_color: "Secondary"
             pos_hint: {"center_x": .5, "center_y": .5}
             halign: "left"
             font_style: "H4"
+            theme_text_color: "Custom"
+            text_color: gch("#9C0000")
 
         MDRoundFlatButton:
             id: activate_button
