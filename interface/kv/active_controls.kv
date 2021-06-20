@@ -32,8 +32,11 @@
                 icon: "stop-circle-outline"
                 pos_hint: {"center_x": .5}
                 padding: dp(20)
-                md_bg_color: gch("#03fcd7")
                 on_release: root.retract()
+                # colors
+                md_bg_color: gch("#DCDBDB")
+                theme_text_color: "Custom"
+                text_color: gch("#9C0000")
 
         AnchorLayout:
             size_hint_y: None
@@ -44,8 +47,10 @@
                 icon: "ray-start-arrow"
                 pos_hint: {"center_x": .5}
                 padding: [0, 20, 0, 20]
-                md_bg_color: gch("#009C9C")
-                on_release: root.invert()
+                # colors
+                md_bg_color: gch("#DCDBDB")
+                theme_text_color: "Custom"
+                text_color: gch("#9C0000")
 
         AnchorLayout:
             size_hint_y: None
@@ -56,8 +61,9 @@
                 icon: "ray-end-arrow"
                 pos_hint: {"center_x": .5}
                 padding: [0, 20, 0, 20]
-                md_bg_color: gch("#009C9C")
                 on_release: root.invert()
+                # colors
+                md_bg_color: gch("#DCDBDB")
                 theme_text_color: "Custom"
-                text_color: gch("#DCDBDB")
+                text_color: gch("#9C0000")
 
