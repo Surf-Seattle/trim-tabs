@@ -26,6 +26,7 @@ class Controller:
 
         self.logger = logging.getLogger('Surf.Controller')
         self.mode = os.environ.get('MODE', 'wet')
+        self.logger.info(f"Mode: {self.mode}")
         self.use_pins = os.environ.get('USE_PINS', 'true') == 'true'
 
         self.travel_durations = yaml.safe_load(open(self.modes, 'r'))[self.mode]
