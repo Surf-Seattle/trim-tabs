@@ -98,8 +98,6 @@ class Controller:
             )
         )
 
-
-
     def deactivate_profile(self) -> dict:
         self.active_profile = None
         self.retract(blindly=True)
