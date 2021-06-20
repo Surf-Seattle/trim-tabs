@@ -115,7 +115,7 @@ class SurfListItem(ThemableBehavior, ButtonBehavior, MDBoxLayout):
         self.dialogue.open()
 
     def close_dialogue(self, *args):
-        logger.debug(f'[UI] "{self.name}" Edit-Dialogue: Closing')
+        logger.warning(f'[UI] "{self.name}" Edit-Dialogue: Closing')
         self.dialogue.dismiss(force=True)
 
     def delete_profile(self, *args):
