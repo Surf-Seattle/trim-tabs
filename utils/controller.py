@@ -181,11 +181,11 @@ class Controller:
         assert direction in ('extend', 'retract')
         for surface_name, surface in self.surfaces.items():
             if surface_name in surface_names:
-                get_attr(surface, f"{direction}_pin").high()
+                getattr(surface, f"{direction}_pin").high()
         time.sleep(duration)
         for surface_name, surface in self.surfaces.items():
             if surface_name in surface_names:
-                get_attr(surface, f"{direction}_pin").low()
+                getattr(surface, f"{direction}_pin").low()
 
 
     def high(self, pin_numbers: List[str], travel: float = None, action_mode: str = 'deploy') -> None:
