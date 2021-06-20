@@ -27,7 +27,7 @@ class SurfSettingsScreen(MDScreen):
                     font_style="H6",
                     on_release=callback,
                     theme_text_color="Custom",
-                    text_color="#9C0000"
+                    text_color=[156, 0, 0, 0]
                 )
                 self.ids._list.add_widget(list_item)
 
