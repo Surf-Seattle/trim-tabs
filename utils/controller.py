@@ -177,6 +177,17 @@ class Controller:
                 getattr(self.surfaces[surface_name], f"{manifest['action']}_pin").low()
                 self.surfaces[surface_name].position = new_positions[surface_name]
 
+    def move_surfaces(self, surface_names, direction, duration) -> None:
+        assert direction in ('extend', 'retract')
+        for surface_name, surface in self.surfaces.items():
+            if surface_name in surface_names:
+                get_attr(surface, f"{direction}_pin").high()
+        time.sleep(duration)
+        for surface_name, surface in self.surfaces.items():
+            if surface_name in surface_names:
+                get_attr(surface, f"{direction}_pin").low()
+
+
     def high(self, pin_numbers: List[str], travel: float = None, action_mode: str = 'deploy') -> None:
         """
         Given a list of pin-numbers, set each of those pins HIGH.
