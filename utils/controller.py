@@ -428,6 +428,10 @@ class Surface:
         self.retract_pin = Pin(self, 'retract', retract_pin_number)
         self.pins = [self.extend_pin, self.retract_pin]
 
+        op_modes = yaml.safe_load(open(os.path.join(CONFIG_DIR, 'operating_modes.yml'), 'r'))
+
+        self.increment_extend_duration = op_modes['incremental'][self.name]['extend']
+        self.increment_retract_duration = op_modes['incremental'][self.name]['retract']
         # configure control variables
         self.position = 0
 
@@ -479,7 +483,7 @@ class Surface:
                 f'extending from {self.position} to {round(self.position + self.increment_by, 2)}'
             )
             self.position = round(self.position + self.increment_by, 2)
-            self.extend_pin.high(self.controller.travel_durations[1]['deploy'] * self.increment_by)
+            self.extend_pin.high(self.increment_extend_duration)
         return self.value
 
     def decrement(self) -> None:
@@ -489,7 +493,7 @@ class Surface:
                 f'retracting from {self.position} to {round(self.position - self.increment_by, 2)}'
             )
             self.position = round(self.position - self.increment_by, 2)
-            self.retract_pin.high(self.controller.travel_durations[1]['deploy'] * self.increment_by)
+            self.retract_pin.high(self.increment_retract_duration)
         return self.value
 
 
