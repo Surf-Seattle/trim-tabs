@@ -16,7 +16,7 @@
             size: self.size
             pos: self.pos
 
-    on_release: self.show_dialogue()
+#    on_release: self.show_dialogue()
 
     MDBoxLayout:
         orientation: 'vertical'
@@ -65,6 +65,15 @@
             font_style: "H4"
             theme_text_color: "Custom"
             text_color: gch("#9C0000")
+
+        MDRoundFlatButton:
+            id: activate_button
+            text: "EDIT"
+            pos_hint: {"left": 1, "center_y": 0.5}
+            on_release: root.show_dialogue()
+            md_bg_color: gch("#9C0000")
+            theme_text_color: "Custom"
+            text_color: gch("#DCDBDB")
 
         MDRoundFlatButton:
             id: activate_button
