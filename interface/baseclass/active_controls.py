@@ -41,9 +41,9 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         self.profile_name = controller.active_profile
         logger.info(controller.values)
         if controller.values['PORT'] == controller.values['STARBOARD']:
-            self.ids.in_button.disabled = True
+            self.ids.invert_button.disabled = True
         else:
-            self.ids.in_button.disabled = False
+            self.ids.invert_button.disabled = False
 
     def invert(self) -> None:
         """The Invert Button in the ActiveBar was pressed."""
