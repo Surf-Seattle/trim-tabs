@@ -51,11 +51,13 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
 
     def invert(self) -> None:
         """The Invert Button in the ActiveBar was pressed."""
+        logger.debug('[UI] Invert Clicked...')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").ids.control_panel.invert()
         self.refresh()
 
     def update_profile(self) -> None:
         """The Save Button in the ActiveBar was pressed"""
+        logger.debug('[UI] Update Profile Clicked...')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").ids.control_panel.update_profile()
         self.refresh()
 
