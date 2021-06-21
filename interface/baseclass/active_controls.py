@@ -61,8 +61,8 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         """The Retract Button in the ActiveBar was pressed."""
         logger.debug('[UI] Retract Clicked, Retracting Tabs...')
         self.profile_name = "wait..."
-        self.ids.goofy_button.disabled = True
-        self.ids.regular_button.disabled = True
+        self.ids.invert_button.disabled = True
+        self.ids.save_button.disabled = True
         self.ids.retract_button.disabled = True
         # TODO: would love to change the color of the active bar during retracting
         # TODO: would love the buttons to be invisible during this period
