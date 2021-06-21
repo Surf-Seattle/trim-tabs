@@ -55,6 +55,7 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         """The Save Button in the ActiveBar was pressed"""
         logger.debug('[UI] Update Profile Clicked...')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").ids.control_panel.update_profile()
+        u.get_root_screen(self).screen_manager.get_screen("ACTIVE").list_item.update_values(controller.values)
         self.refresh()
 
     def retract(self):
