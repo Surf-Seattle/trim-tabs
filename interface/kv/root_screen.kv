@@ -11,7 +11,7 @@
 #: import SurfSettingsScreen interface.baseclass.settings_screen.SurfSettingsScreen
 
 <SurfRootScreen>
-    md_bg_color: gch("#33333d")
+    md_bg_color: gch("#DCDBDB") # 33333d
     width: 300
     height: 500
 
@@ -39,7 +39,7 @@
 
             NavigationItem:
                 text: "SETTINGS"
-                icon: "cog"
+                icon: "cogs"
                 on_release:
                     scr_manager.transition.direction = "left"
                     scr_manager.current = "SETTINGS"

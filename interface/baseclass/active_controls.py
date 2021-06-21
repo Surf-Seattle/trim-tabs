@@ -22,8 +22,8 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
     def show(self):
         """Show the ActiveBar widget when a profile is activated."""
         self.profile_name = "wait..."
-        self.ids.goofy_button.disabled = True
-        self.ids.regular_button.disabled = True
+        self.ids.invert_button.disabled = True
+        self.ids.save_button.disabled = True
         self.ids.retract_button.disabled = True
         u.hide_widget(self, dohide=False)
 
@@ -37,29 +37,33 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         Attributes of the ACTIVE screen control_panel are used to refresh the ActiveBar
         """
         self.ids.retract_button.disabled = False
+        self.ids.save_button.disabled = False
         self.profile_name = controller.active_profile
         logger.info(controller.values)
-        if controller.values['PORT'] > controller.values['STARBOARD']:
-            self.ids.regular_button.disabled = True
-            self.ids.goofy_button.disabled = False
-        elif controller.values['PORT'] < controller.values['STARBOARD']:
-            self.ids.regular_button.disabled = False
-            self.ids.goofy_button.disabled = True
+        if controller.values['PORT'] == controller.values['STARBOARD']:
+            self.ids.invert_button.disabled = True
         else:
-            self.ids.regular_button.disabled = True
-            self.ids.goofy_button.disabled = True
+            self.ids.invert_button.disabled = False
 
     def invert(self) -> None:
-        """The Goofy or Regular Button in the ActiveBar was pressed."""
+        """The Invert Button in the ActiveBar was pressed."""
+        logger.debug('[UI] Invert Clicked...')
         u.get_root_screen(self).screen_manager.get_screen("ACTIVE").ids.control_panel.invert()
+        self.refresh()
+
+    def update_profile(self) -> None:
+        """The Save Button in the ActiveBar was pressed"""
+        logger.debug('[UI] Update Profile Clicked...')
+        u.get_root_screen(self).screen_manager.get_screen("ACTIVE").ids.control_panel.update_profile()
+        u.get_root_screen(self).screen_manager.get_screen("ACTIVE").list_item.update_values(controller.values)
         self.refresh()
 
     def retract(self):
         """The Retract Button in the ActiveBar was pressed."""
         logger.debug('[UI] Retract Clicked, Retracting Tabs...')
         self.profile_name = "wait..."
-        self.ids.goofy_button.disabled = True
-        self.ids.regular_button.disabled = True
+        self.ids.invert_button.disabled = True
+        self.ids.save_button.disabled = True
         self.ids.retract_button.disabled = True
         # TODO: would love to change the color of the active bar during retracting
         # TODO: would love the buttons to be invisible during this period

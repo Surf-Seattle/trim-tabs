@@ -18,6 +18,8 @@
             text: str(int(slider.value))
             halign: "center"
             valign: "center"
+            theme_text_color: "Custom"
+            text_color: gch("#DCDBDB")
 
         MDSlider:
             pos_hint: {"center_x": .5, "center_y": .5}
@@ -38,6 +40,8 @@
             font_style: "Body1"
             text: root.display_name
             halign: "left"
+            theme_text_color: "Custom"
+            text_color: gch("#DCDBDB")
             # ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'Subtitle1', 'Subtitle2', 'Body1', 'Body2', 'Button', 'Caption', 'Overline', 'Icon']
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -49,6 +53,7 @@
     size_hint_y: None
     height: "300dp"
     ScrollView:
+        md_bg_color: gch("#9C0000")
         GridLayout:
             id: interactive_controls
             cols: 1

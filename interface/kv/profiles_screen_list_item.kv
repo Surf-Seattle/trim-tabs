@@ -11,12 +11,12 @@
             points: (root.x+dp(16), root.y, root.x+self.width-dp(16)-0, root.y)
     canvas.before:
         Color:
-            rgba: gch("#31313b")
+            rgba: gch("#EDEDED")
         Rectangle:
             size: self.size
             pos: self.pos
 
-    on_release: self.event_handler()
+#    on_release: self.show_dialogue()
 
     MDBoxLayout:
         orientation: 'vertical'
@@ -27,9 +27,8 @@
 
         SurfLabel:  # PROFILE NAME
             text: root.name
-#            theme_text_color: "Primary"
-#            theme_text_color: "Custom"
-#            text_color: root.icon_color,
+            theme_text_color: "Custom"
+            text_color: gch("#9C0000")
             font_style: "H4"
 
     MDBoxLayout:
@@ -43,30 +42,35 @@
         SurfLabel:
             id: PORT
             text: str(int(root.port_value))
-            theme_text_color: "Secondary"
             pos_hint: {"center_x": .5, "center_y": .5}
             halign: "right"
             font_style: "H4"
+            theme_text_color: "Custom"
+            text_color: gch("#9C0000")
 
         SurfLabel:
             id: CENTER
             text: str(int(root.center_value))
-            theme_text_color: "Secondary"
             pos_hint: {"center_x": .5, "center_y": .5}
             halign: "center"
             font_style: "H4"
+            theme_text_color: "Custom"
+            text_color: gch("#9C0000")
 
         SurfLabel:
             id: STARBOARD
             text: str(int(root.starboard_value))
-            theme_text_color: "Secondary"
             pos_hint: {"center_x": .5, "center_y": .5}
             halign: "left"
             font_style: "H4"
+            theme_text_color: "Custom"
+            text_color: gch("#9C0000")
 
         MDRoundFlatButton:
             id: activate_button
             text: "START"
             pos_hint: {"left": 1, "center_y": 0.5}
-            on_release: root.activate_handler()
-            md_bg_color: gch("#10ab05")
+            on_release: root.activate()
+            md_bg_color: gch("#9C0000")
+            theme_text_color: "Custom"
+            text_color: gch("#DCDBDB")

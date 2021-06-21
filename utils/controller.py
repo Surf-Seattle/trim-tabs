@@ -7,7 +7,7 @@ from typing import List, Set
 if os.environ.get('USE_PINS', 'true') == 'true':
     import RPi.GPIO as GPIO
 
-from utils import CONFIG_DIR
+from utils import CONFIG_DIR, PROFILES_DIR
 from utils import utilities as u
 
 # module level variable populated when `start()` is called
@@ -26,6 +26,7 @@ class Controller:
 
         self.logger = logging.getLogger('Surf.Controller')
         self.mode = os.environ.get('MODE', 'wet')
+        self.logger.info(f"Mode: {self.mode}")
         self.use_pins = os.environ.get('USE_PINS', 'true') == 'true'
 
         self.travel_durations = yaml.safe_load(open(self.modes, 'r'))[self.mode]
@@ -78,6 +79,24 @@ class Controller:
             }
         )
         return self.values
+
+    def update_profile(self):
+        if not self.active_profile:
+            return
+
+        config_path = os.path.join(PROFILES_DIR, f"{self.active_profile}.yml")
+        current_config = yaml.safe_load(open(config_path, 'r'))
+        open(config_path, 'w').write(
+            yaml.dump(
+                {
+                    'name': current_config['name'],
+                    'username': current_config['username'],
+                    'control_surfaces': self.values
+                },
+                default_flow_style=False,
+                sort_keys=False
+            )
+        )
 
     def deactivate_profile(self) -> dict:
         self.active_profile = None
@@ -175,6 +194,17 @@ class Controller:
                 manifest = change_manifest[surface_name]
                 getattr(self.surfaces[surface_name], f"{manifest['action']}_pin").low()
                 self.surfaces[surface_name].position = new_positions[surface_name]
+
+    def move_surfaces(self, surface_names, direction, duration) -> None:
+        assert direction in ('extend', 'retract')
+        for surface_name, surface in self.surfaces.items():
+            if surface_name in surface_names:
+                getattr(surface, f"{direction}_pin").high()
+        time.sleep(duration)
+        for surface_name, surface in self.surfaces.items():
+            if surface_name in surface_names:
+                getattr(surface, f"{direction}_pin").low()
+
 
     def high(self, pin_numbers: List[str], travel: float = None, action_mode: str = 'deploy') -> None:
         """
@@ -416,6 +446,11 @@ class Surface:
         self.retract_pin = Pin(self, 'retract', retract_pin_number)
         self.pins = [self.extend_pin, self.retract_pin]
 
+        # this is how increment/decrement can use custom timings rather than the full out/back durations
+        op_modes = yaml.safe_load(open(os.path.join(CONFIG_DIR, 'operating_modes.yml'), 'r'))[self.controller.mode]
+        self.increment_extend_duration = op_modes['incremental'][self.name]['extend']
+        self.increment_retract_duration = op_modes['incremental'][self.name]['retract']
+
         # configure control variables
         self.position = 0
 
@@ -467,7 +502,7 @@ class Surface:
                 f'extending from {self.position} to {round(self.position + self.increment_by, 2)}'
             )
             self.position = round(self.position + self.increment_by, 2)
-            self.extend_pin.high(self.controller.travel_durations[1]['deploy'] * self.increment_by)
+            self.extend_pin.high(self.increment_extend_duration)
         return self.value
 
     def decrement(self) -> None:
@@ -477,7 +512,7 @@ class Surface:
                 f'retracting from {self.position} to {round(self.position - self.increment_by, 2)}'
             )
             self.position = round(self.position - self.increment_by, 2)
-            self.retract_pin.high(self.controller.travel_durations[1]['deploy'] * self.increment_by)
+            self.retract_pin.high(self.increment_retract_duration)
         return self.value
 
 

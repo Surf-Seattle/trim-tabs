@@ -4,15 +4,25 @@
 #     retract: <duration in seconds to fully retract x pins in this mode>
 
 wet:
+  incremental:
+    PORT:
+      extend: 0.23
+      retract: 0.28
+    CENTER:
+      extend: 0.24
+      retract: 0.23
+    STARBOARD:
+      extend: 0.22
+      retract: 0.28
   1:
-    deploy: 3.52
-    withdraw: 4.00
+    deploy: 3.6
+    withdraw: 4.2
   2:
-    deploy: 4.21
-    withdraw: 5.00
+    deploy: 4.2
+    withdraw: 5.0
   3:
-    deploy: 5.87
-    withdraw: 6.50
+    deploy: 4.6
+    withdraw: 5.8
 
 dry:
   1:

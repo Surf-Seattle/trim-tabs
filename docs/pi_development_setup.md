@@ -84,7 +84,7 @@ Options:
 # Cloning Git Repositories
 
 ```bash
-(surfy) ~/projects: $ git clone https://github.com/kivymd/KivyMD.git --depth 1
+(surfy) ~/projects: $ git clone https://github.com/kivymd/KivyMD.git@0.104.2 --depth 1
 (surfy) ~/projects: $ cd KivyMD
 (surfy) ~/projects/KivyMD: $ pip install .
 (surfy) ~/projects/KivyMD: $ cd ..

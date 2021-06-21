@@ -45,6 +45,9 @@ class SurfListItem(ThemableBehavior, ButtonBehavior, MDBoxLayout):
         self._dialogue = None
 
     def event_handler(self) -> None:
+        logger.info('SurfListItem.event_handler.begin')
+        logger.info(f'SurfListItem.event_handler - self.activate_clicked = {self.activate_clicked}')
+        logger.info(f'SurfListItem.event_handler - self.ids.activate_button.text = {self.ids.activate_button.text}')
         if self.activate_clicked and self.ids.activate_button.text == 'START':
             self.activate_clicked = False
             self.activate()
@@ -53,22 +56,25 @@ class SurfListItem(ThemableBehavior, ButtonBehavior, MDBoxLayout):
             self.deactivate()
         else:
             self.show_dialogue()
+        logger.info('SurfListItem.event_handler.end')
 
         # Reset Indicators
         self.activate_clicked = False
 
-    def activate_handler(self) -> None:
-        logger.info(f'[UI] Activate Profile: "{self.name}"')
-        self.activate_clicked = True
 
     def activate(self) -> None:
-        controller.active_profile = self.username
-        u.get_root_screen(self).active_bar.show()
-        u.get_root_screen(self).navigation_bar.set_current(1)
-        u.get_root_screen(self).screen_manager.current = "ACTIVE"
-        u.get_screen(self, "ACTIVE").activate(self.username, self)
-        u.get_screen(self, "PROFILES").set_all_list_item_buttons('START')
-        self.ids.activate_button.text = 'STOP'
+        logger.info('SurfListItem.activate.begin')
+        if controller.active_profile:
+            logger.info("NOPE! There is already an active profile!")
+        else:
+            controller.active_profile = self.username
+            u.get_root_screen(self).active_bar.show()
+            u.get_root_screen(self).navigation_bar.set_current(1)
+            u.get_root_screen(self).screen_manager.current = "ACTIVE"
+            u.get_screen(self, "ACTIVE").activate(self.username, self)
+            u.get_screen(self, "PROFILES").set_all_list_item_buttons('START')
+            self.ids.activate_button.text = 'STOP'
+        logger.info('SurfListItem.activate.end')
 
     def deactivate(self) -> None:
         self.ids.activate_button.text = 'START'
@@ -104,13 +110,14 @@ class SurfListItem(ThemableBehavior, ButtonBehavior, MDBoxLayout):
             )
         return self._dialogue
 
-
     def show_dialogue(self, *args):
-        logger.debug(f'[UI] "{self.name}" Edit-Dialogue: Showing')
+        logger.warning(f'[UI] "{self.name}" Edit-Dialogue: Showing')
+        logger.warning(args)
+
         self.dialogue.open()
 
     def close_dialogue(self, *args):
-        logger.debug(f'[UI] "{self.name}" Edit-Dialogue: Closing')
+        logger.warning(f'[UI] "{self.name}" Edit-Dialogue: Closing')
         self.dialogue.dismiss(force=True)
 
     def delete_profile(self, *args):

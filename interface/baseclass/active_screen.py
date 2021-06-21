@@ -106,6 +106,10 @@ class ControlPanel(BoxLayout):
         for surface_name, surface_value in controller.invert().items():
             self.tab_control_ids[surface_name].value = surface_value
 
+    def update_profile(self) -> None:
+        """Update the current wave profile with the current values."""
+        controller.update_profile()
+
 
 class TabControl(MDBoxLayout):
     id = StringProperty()
