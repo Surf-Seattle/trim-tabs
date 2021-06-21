@@ -22,8 +22,8 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
     def show(self):
         """Show the ActiveBar widget when a profile is activated."""
         self.profile_name = "wait..."
-        self.ids.goofy_button.disabled = True
-        self.ids.regular_button.disabled = True
+        self.ids.invert_button.disabled = True
+        self.ids.save_button.disabled = True
         self.ids.retract_button.disabled = True
         u.hide_widget(self, dohide=False)
 
@@ -37,17 +37,13 @@ class ActiveBar(ThemableBehavior, MDBoxLayout):
         Attributes of the ACTIVE screen control_panel are used to refresh the ActiveBar
         """
         self.ids.retract_button.disabled = False
+        self.ids.save_button.disabled = False
         self.profile_name = controller.active_profile
         logger.info(controller.values)
-        if controller.values['PORT'] > controller.values['STARBOARD']:
-            self.ids.regular_button.disabled = True
-            self.ids.goofy_button.disabled = False
-        elif controller.values['PORT'] < controller.values['STARBOARD']:
-            self.ids.regular_button.disabled = False
-            self.ids.goofy_button.disabled = True
+        if controller.values['PORT'] == controller.values['STARBOARD']:
+            self.ids.in_button.disabled = True
         else:
-            self.ids.regular_button.disabled = True
-            self.ids.goofy_button.disabled = True
+            self.ids.in_button.disabled = False
 
     def invert(self) -> None:
         """The Invert Button in the ActiveBar was pressed."""
